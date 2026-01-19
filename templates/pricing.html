@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<main class="fade-in">
+    <h1>Access Levels</h1>
+    <p>Choose your intelligence clearance.</p>
+
+    <div class="pricing-grid">
+        <div class="card pricing-card slide-up" style="animation-delay: 0.1s;">
+            <h3>SURFACE</h3>
+            <div class="price" style="font-size: 2rem; margin: 20px 0;">PKR 0<span>/mo</span></div>
+            <ul style="list-style: none; padding: 0; text-align: left; color: #aaa; margin-bottom: 20px;">
+                <li style="margin: 10px 0;">✓ Scan 50+ Verified Nodes</li>
+                <li style="margin: 10px 0;">✓ Zero False-Positives</li>
+                <li style="margin: 10px 0;">✓ Public Web Dashboard</li>
+                <li style="margin: 10px 0;">✓ Standard Processing Speed</li>
+            </ul>
+            <button class="btn-outline" style="width: 100%; background: transparent; border: 1px solid #444; color: #fff;" onclick="window.location.href='/'">ACTIVE • GO TO SCANNER</button>
+        </div>
+
+        <div class="card pricing-card pro slide-up" style="animation-delay: 0.3s;">
+            <h3>DEEP DIVE</h3>
+            <div class="price" style="font-size: 2rem; margin: 20px 0;">CONTACT<span>/us</span></div>
+            <ul style="list-style: none; padding: 0; text-align: left; color: #aaa; margin-bottom: 20px;">
+                <li style="margin: 10px 0;">✓ Full Spectrum Scan (500+ Sites)</li>
+                <li style="margin: 10px 0;">✓ API Access Key</li>
+                <li style="margin: 10px 0;">✓ PDF / JSON Report Export</li>
+                <li style="margin: 10px 0;">✓ Priority Support Channel</li>
+            </ul>
+            
+            <a href="mailto:tracebackintelligence@gmail.com?subject=Requesting%20Deep%20Dive%20Access&body=Hello%20TraceBack%20Team,%0A%0AI%20am%20interested%20in%20the%20Deep%20Dive%20plan%20for%20my%20organization.%20Please%20send%20details." 
+               class="btn-solid" 
+               style="display: block; text-align: center; text-decoration: none; padding: 15px;">
+               REQUEST ACCESS
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<main class="fade-in">
+    
+    <section class="about-hero">
+        <h1>The Intelligence <span class="highlight">Protocol</span></h1>
+        <p class="mission-text">
+            In an era of mass surveillance and data brokerage, privacy is no longer a default—it is a discipline. 
+            <strong>TraceBack Intelligence</strong> was founded to democratize Open Source Intelligence (OSINT). 
+            We provide the tools necessary for individuals to audit their digital footprint, secure their identity, 
+            and understand the vast web of data that exists about them on the surface web.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2 class="section-header">Architecture & Capabilities</h2>
+        <div class="features-grid">
+            <div class="card feature-card">
+                <h3><i class="fas fa-network-wired highlight"></i> Distributed Scanning</h3>
+                <p>Our engine utilizes Python-based multi-threading to query 50+ social network nodes simultaneously, reducing scan times from minutes to milliseconds.</p>
+            </div>
+            <div class="card feature-card">
+                <h3><i class="fas fa-user-shield highlight"></i> Zero-Log Policy</h3>
+                <p>We believe in privacy by design. Search queries are processed in RAM (Random Access Memory) and are never written to a permanent database log.</p>
+            </div>
+            <div class="card feature-card">
+                <h3><i class="fas fa-code highlight"></i> Open Standard</h3>
+                <p>Built on the principles of the OSINT Framework, our methodology ensures that all data retrieved is legally accessible public information.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <h2 class="section-header">Tactical Roadmap (2026)</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot green"></div>
+                <div class="timeline-content">
+                    <h3>Phase 1: Surface Visibility (Active)</h3>
+                    <p>Launch of the Username Enumeration Engine. Coverage of top 20 global social platforms including Instagram, GitHub, and Twitter.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot yellow"></div>
+                <div class="timeline-content">
+                    <h3>Phase 2: Breach Radar (In Development)</h3>
+                    <p>Integration with 'HaveIBeenPwned' API to cross-reference user emails against 15 billion leaked records from major data breaches.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot red"></div>
+                <div class="timeline-content">
+                    <h3>Phase 3: The Entropy Project (Q4 2026)</h3>
+                    <p>Release of our Password Strength Auditor. An AI-driven tool that analyzes password complexity against known brute-force dictionaries.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <h2 class="section-header">Horizon Research (Classified)</h2>
+        <p class="horizon-intro">Our R&D division is currently exploring the feasibility of next-generation privacy tools. These projects represent the potential future of TraceBack.</p>
+        
+        <div class="grid horizon-grid">
+            <div class="card horizon-card">
+                <h4><i class="fas fa-robot"></i> Deepfake Detection</h4>
+                <p>Using Computer Vision to analyze profile photos for signs of AI generation or manipulation.</p>
+            </div>
+            <div class="card horizon-card">
+                <h4><i class="fab fa-bitcoin"></i> Crypto-Trace</h4>
+                <p>A lightweight blockchain explorer to link public wallet addresses to known social media identities.</p>
+            </div>
+            <div class="card horizon-card">
+                <h4><i class="fas fa-wifi"></i> IoT Vulnerability Scanner</h4>
+                <p>A browser-based tool to detect unsecured smart devices (cameras, printers) on your local home network.</p>
+            </div>
+            <div class="card horizon-card">
+                <h4><i class="fas fa-globe-americas"></i> Geo-Fencing Alerts</h4>
+                <p>Automated warnings when your social media posts inadvertently reveal your home or work location metadata.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="founder-section">
+        <h3>Command & Control</h3>
+        <p>TraceBack is engineered by a solo Cybersecurity Researcher based in Karachi.</p>
+        <p class="founder-stack">Stack: Python • Flask • MongoDB • OSINT</p>
+        <br>
+        <a href="https://www.linkedin.com" target="_blank" class="btn-outline">ESTABLISH UPLINK (LINKEDIN)</a>
+    </section>
+
+</main>
+{% endblock %}

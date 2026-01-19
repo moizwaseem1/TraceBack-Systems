@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<main class="legal-doc fade-in">
+    <h1>Privacy Protocol</h1>
+    <p class="last-updated">Last Updated: January 2026</p>
+
+    <section>
+        <h3>1. Data Collection</h3>
+        <p>TraceBack Intelligence operates on a "Zero-Knowledge" architecture where possible. However, to provide our services, we process the following:</p>
+        <ul>
+            <li><strong>Search Queries:</strong> Usernames entered into the scanner are processed in real-time but are not permanently stored in our public logs.</li>
+            <li><strong>Access Logs:</strong> We collect IP addresses and browser user-agents for security auditing and DDoS protection.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>2. Third-Party Services</h3>
+        <p>Our infrastructure utilizes trusted third-party vendors.</p>
+    </section>
+
+    <section>
+        <h3>3. Data Usage</h3>
+        <p>We do not sell, trade, or rent your personal identification information to others. Data is used strictly to:</p>
+        <ul>
+            <li>Execute the requested OSINT scans.</li>
+            <li>Improve the accuracy of our search nodes.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h3>4. Contact</h3>
+        <p>For privacy-related inquiries, contact the Data Controller at <a href="mailto:privacy@traceback.tech" class="highlight">privacy@traceback.tech</a>.</p>
+    </section>
+</main>
+{% endblock %}
