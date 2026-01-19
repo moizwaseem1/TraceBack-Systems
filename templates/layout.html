@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceBack | OSINT Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    
+    <div id="mobileNav" class="mobile-nav-overlay">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleNav()">&times;</a>
+        <div class="mobile-nav-content">
+            <a href="/" onclick="toggleNav()">SCANNER</a>
+            <a href="/pricing" onclick="toggleNav()">ACCESS</a>
+            <a href="/tools" onclick="toggleNav()">LABS</a>
+            <a href="/about" onclick="toggleNav()">MISSION</a>
+        </div>
+    </div>
 
+    <div class="container fade-in">
+        <header>
+            <div class="logo">TRACE<span class="highlight">BACK</span>_</div>
+            
+            <nav class="desktop-nav">
+                <a href="/">SCANNER</a>
+                <a href="/pricing">ACCESS</a>
+                <a href="/tools">LABS</a>
+                <a href="/about">MISSION</a>
+            </nav>
+
+            <div class="hamburger" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+
+        <footer>
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>TraceBack_</h4>
+                    <p>Democratizing digital intelligence and OSINT security tools for the modern web.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <a href="/">Scanner</a>
+                    <a href="/pricing">Pricing</a>
+                    <a href="/tools">API (Beta)</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="/about">About</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                    <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                    <a href="mailto:founder@traceback.tech">founder@traceback.tech</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TraceBack Intelligence. All Systems Operational.</p>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+<div id="termsModal" class="modal-overlay">
+        <div class="modal-box slide-up">
+            <div class="modal-header">
+                <span class="highlight">⚠️ SYSTEM PROTOCOL INITIATED</span>
+            </div>
+            <div class="modal-body">
+                <h2>Access Agreement</h2>
+                <p>Welcome to <strong>TraceBack Intelligence</strong>. Before accessing our OSINT capabilities, you must acknowledge the following:</p>
+                <ul>
+                    <li>You will not use this tool for stalking or harassment.</li>
+                    <li>You understand this data is publicly available.</li>
+                    <li>You agree to our <a href="/terms" target="_blank" class="highlight">Terms of Service</a> and <a href="/privacy" target="_blank" class="highlight">Privacy Protocol</a>.</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button onclick="acceptTerms()" class="btn-solid">I ACCEPT PROTOCOLS</button>
+                <button onclick="declineTerms()" class="btn-outline">DECLINE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
