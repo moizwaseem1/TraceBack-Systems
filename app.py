@@ -3,6 +3,7 @@ import requests
 import json
 import concurrent.futures
 import os
+from flask import send_from_directory
 
 # ==========================================
 # APP CONFIGURATION (Vercel-Safe)
@@ -55,6 +56,10 @@ def check_site(site, username):
 # ==========================================
 # PAGE ROUTES (Navigation)
 # ==========================================
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.png', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/')
 def index():
