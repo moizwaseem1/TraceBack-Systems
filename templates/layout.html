@@ -163,8 +163,29 @@
         .coming-soon { color: #555; }
 
         /* --- Pricing Cards --- */
-        .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
-        .pricing-card { text-align: center; border: 1px solid #333; padding: 30px; border-radius: 8px; transition: 0.3s; }
+        .pricing-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            margin-top: 40px; 
+        }
+
+        .pricing-card { 
+            /* This fixes the layout breaking! */
+            display: flex !important;       
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            align-items: center;
+            
+            /* Visual Styles */
+            text-align: center; 
+            border: 1px solid #333; 
+            padding: 30px; 
+            border-radius: 8px; 
+            transition: 0.3s; 
+            background: rgba(255, 255, 255, 0.02); /* Slight background */
+        }
+
         .pricing-card:hover { transform: translateY(-5px); border-color: #555; }
         .pro { border-color: var(--neon); }
 
