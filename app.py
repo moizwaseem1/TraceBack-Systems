@@ -7,7 +7,6 @@ import os
 # ==========================================
 # APP CONFIGURATION (Vercel-Safe)
 # ==========================================
-# We explicitly tell Flask where the folders are to avoid "404 Not Found" errors
 app = Flask(__name__, static_url_path='/static', static_folder='static', template_folder='templates')
 
 # ==========================================
@@ -59,7 +58,7 @@ def check_site(site, username):
 
 @app.route('/')
 def index():
-    return render_template('coming_soon.html')
+    return render_template('index.html')
 
 @app.route('/pricing')
 def pricing():
