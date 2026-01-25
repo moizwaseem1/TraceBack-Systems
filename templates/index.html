@@ -1,72 +1,92 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
+    }
 
-<section class="hero-section fade-in">
-    <div class="hero-content">
-        <span class="badge">V 1.0 // PUBLIC ACCESS ENABLED</span>
-        <h1>Illuminating the <br><span class="highlight glitched-text">Digital Shadow.</span></h1>
-        <p class="hero-sub">
-            TraceBack is the premier Open Source Intelligence (OSINT) provider. 
-            We map digital footprints, verify identities, and secure the unseen.
-        </p>
-    </div>
-</section>
+    .tool-card {
+        background: rgba(20, 20, 20, 0.6);
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 30px;
+        transition: 0.3s;
+        text-align: left;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: block;
+    }
 
-<section class="terminal-wrapper slide-up">
-    <div class="terminal-header">
-        <div class="dots">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-        </div>
-        <div class="terminal-title">TRACEBACK_CLI // USERNAME_SCANNER.EXE</div>
-    </div>
+    .tool-card:hover {
+        border-color: var(--neon);
+        transform: translateY(-5px);
+        background: rgba(20, 30, 20, 0.8);
+    }
+
+    .tool-icon {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #666;
+        transition: 0.3s;
+    }
     
-    <div class="terminal-body">
-        <div class="input-group">
-            <span class="prompt">root@traceback:~#</span>
-            <input type="text" id="username" placeholder="Enter target username..." autocomplete="off">
-            <button onclick="startScan()">EXECUTE</button>
-        </div>
+    .tool-card:hover .tool-icon { color: var(--neon); }
+    .tool-card:hover .tool-icon.danger { color: #ff3333; }
 
-        <div id="loader" class="hidden">
-            <div class="scanning-text">
-                > INITIALIZING NODES...<br>
-                > PINGING DATABASE...<br>
-                > <span class="blink">SEARCHING SURFACE WEB...</span>
+    .tool-title { font-size: 1.5rem; color: #fff; margin-bottom: 10px; font-weight: bold; }
+    .tool-desc { color: #888; font-size: 0.9rem; line-height: 1.5; }
+    
+    .status-dot {
+        height: 8px; width: 8px; border-radius: 50%;
+        display: inline-block; margin-right: 5px;
+    }
+    .online { background: var(--neon); box-shadow: 0 0 5px var(--neon); }
+</style>
+
+<div class="fade-in" style="text-align: center; padding: 40px 0;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 10px;">SYSTEM <span class="highlight">DASHBOARD</span></h1>
+    <p style="color: #666;">SELECT AN INTELLIGENCE MODULE</p>
+
+    <div class="dashboard-grid">
+        
+        <a href="/scanner" class="tool-card">
+            <div class="tool-icon"><i class="fas fa-search"></i></div>
+            <div class="tool-title">Username Scanner</div>
+            <p class="tool-desc">
+                The core engine. Map a username across 50+ social networks and hidden sites.
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
+                <span class="status-dot online"></span> SYSTEM ONLINE
+            </div>
+        </a>
+
+        <a href="/radar" class="tool-card" style="border-left: 3px solid #ff3333;">
+            <div class="tool-icon danger" style="color: #ff3333;"><i class="fas fa-radiation"></i></div>
+            <div class="tool-title" style="color: #ff3333;">Breach Radar</div>
+            <p class="tool-desc">
+                Cross-reference footprint against 600+ compromised databases. Identify leaks.
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
+                <span class="status-dot online" style="background:#ff3333; box-shadow:0 0 5px #ff3333;"></span> ACTIVE THREATS
+            </div>
+        </a>
+
+        <div class="tool-card" style="opacity: 0.5; cursor: not-allowed; border-style: dashed;">
+            <div class="tool-icon"><i class="fas fa-network-wired"></i></div>
+            <div class="tool-title">Visual Graph</div>
+            <p class="tool-desc">
+                Generate visual connection maps of target identities. (Development in progress).
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
+                <span class="status-dot" style="background: #555;"></span> OFFLINE
             </div>
         </div>
-        
-        <div id="results" class="grid results-terminal"></div>
+
     </div>
-</section>
-
-<section class="ecosystem-section">
-    <h2 class="section-title">The Ecosystem_</h2>
-    <div class="features-grid">
-        
-        <div class="feature-card active-feature">
-            <div class="icon"><i class="fas fa-fingerprint"></i></div>
-            <h3>Identity Trace</h3>
-            <p>Real-time username mapping across 50+ social networks and hidden forums.</p>
-            <span class="status-tag online">● ONLINE</span>
-        </div>
-
-        <div class="feature-card">
-            <div class="icon"><i class="fas fa-radiation"></i></div>
-            <h3>Breach Radar</h3>
-            <p>Monitor your email against 15 billion leaked records from dark web dumps.</p>
-            <span class="status-tag coming-soon">○ COMING SOON</span>
-        </div>
-
-        <div class="feature-card">
-            <div class="icon"><i class="fas fa-key"></i></div>
-            <h3>Entropy Audit</h3>
-            <p>AI-driven password strength analysis to prevent brute-force attacks.</p>
-            <span class="status-tag coming-soon">○ COMING SOON</span>
-        </div>
-    </div>
-</section>
-
+</div>
 {% endblock %}
