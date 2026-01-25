@@ -2,91 +2,167 @@
 
 {% block content %}
 <style>
-    .dashboard-grid {
+    /* HERO SECTION */
+    .hero {
+        text-align: center;
+        padding: 80px 20px 60px;
+        position: relative;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        margin-bottom: 20px;
+        line-height: 1.1;
+        letter-spacing: -2px;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        color: #888;
+        max-width: 700px;
+        margin: 0 auto 40px;
+    }
+
+    /* ACTION BUTTONS CONTAINER */
+    .cta-container {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-hero {
+        padding: 18px 40px;
+        font-size: 1rem;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-primary {
+        background: var(--neon);
+        color: #000;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+    .btn-primary:hover {
+        background: #fff;
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-secondary {
+        border: 1px solid #333;
+        color: #fff;
+        background: rgba(20, 20, 20, 0.8);
+    }
+    .btn-secondary:hover {
+        border-color: #ff3333;
+        color: #ff3333;
+    }
+
+    /* FEATURE GRID */
+    .landing-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 30px;
-        margin-top: 50px;
+        margin-top: 80px;
+        padding: 0 20px;
     }
 
-    .tool-card {
-        background: rgba(20, 20, 20, 0.6);
-        border: 1px solid #333;
-        border-radius: 8px;
+    .feature-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid #222;
         padding: 30px;
+        border-radius: 8px;
         transition: 0.3s;
-        text-align: left;
-        position: relative;
-        overflow: hidden;
-        text-decoration: none;
-        display: block;
     }
-
-    .tool-card:hover {
-        border-color: var(--neon);
+    .feature-box:hover {
         transform: translateY(-5px);
-        background: rgba(20, 30, 20, 0.8);
+        border-color: #444;
     }
 
-    .tool-icon {
-        font-size: 2.5rem;
+    .icon-box {
+        font-size: 2rem;
         margin-bottom: 20px;
-        color: #666;
-        transition: 0.3s;
+        color: var(--neon);
     }
-    
-    .tool-card:hover .tool-icon { color: var(--neon); }
-    .tool-card:hover .tool-icon.danger { color: #ff3333; }
-
-    .tool-title { font-size: 1.5rem; color: #fff; margin-bottom: 10px; font-weight: bold; }
-    .tool-desc { color: #888; font-size: 0.9rem; line-height: 1.5; }
-    
-    .status-dot {
-        height: 8px; width: 8px; border-radius: 50%;
-        display: inline-block; margin-right: 5px;
-    }
-    .online { background: var(--neon); box-shadow: 0 0 5px var(--neon); }
 </style>
 
-<div class="fade-in" style="text-align: center; padding: 40px 0;">
-    <h1 style="font-size: 2.5rem; margin-bottom: 10px;">SYSTEM <span class="highlight">DASHBOARD</span></h1>
-    <p style="color: #666;">SELECT AN INTELLIGENCE MODULE</p>
-
-    <div class="dashboard-grid">
+<div class="fade-in">
+    
+    <section class="hero">
+        <span class="badge" style="margin-bottom: 20px; display: inline-block;">SYSTEM ONLINE v2.0</span>
+        <h1 class="glitched-text">DIGITAL SHADOW <br><span class="highlight">REVEALED.</span></h1>
         
-        <a href="/scanner" class="tool-card">
-            <div class="tool-icon"><i class="fas fa-search"></i></div>
-            <div class="tool-title">Username Scanner</div>
-            <p class="tool-desc">
-                The core engine. Map a username across 50+ social networks and hidden sites.
-            </p>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-                <span class="status-dot online"></span> SYSTEM ONLINE
-            </div>
-        </a>
+        <p>
+            The advanced Open Source Intelligence (OSINT) engine. 
+            Map usernames across 50+ networks and detect database breaches in milliseconds.
+        </p>
 
-        <a href="/radar" class="tool-card" style="border-left: 3px solid #ff3333;">
-            <div class="tool-icon danger" style="color: #ff3333;"><i class="fas fa-radiation"></i></div>
-            <div class="tool-title" style="color: #ff3333;">Breach Radar</div>
-            <p class="tool-desc">
-                Cross-reference footprint against 600+ compromised databases. Identify leaks.
-            </p>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-                <span class="status-dot online" style="background:#ff3333; box-shadow:0 0 5px #ff3333;"></span> ACTIVE THREATS
-            </div>
-        </a>
+        <div class="cta-container">
+            <a href="/scanner" class="btn-hero btn-primary">
+                <i class="fas fa-search"></i> LAUNCH SCANNER
+            </a>
+            <a href="/radar" class="btn-hero btn-secondary">
+                <i class="fas fa-radiation"></i> CHECK BREACHES
+            </a>
+        </div>
+    </section>
 
-        <div class="tool-card" style="opacity: 0.5; cursor: not-allowed; border-style: dashed;">
-            <div class="tool-icon"><i class="fas fa-network-wired"></i></div>
-            <div class="tool-title">Visual Graph</div>
-            <p class="tool-desc">
-                Generate visual connection maps of target identities. (Development in progress).
+    <div style="max-width: 700px; margin: 0 auto; background: #000; border: 1px solid #333; padding: 20px; border-radius: 6px; font-family: monospace; color: #ccc; font-size: 0.9rem; text-align: left;">
+        <div style="margin-bottom: 10px;">
+            <span style="color: var(--neon);">root@traceback:~#</span> ./init_protocol.sh
+        </div>
+        <div id="typewriter" style="color: #888;"></div>
+    </div>
+
+    <div class="landing-grid">
+        
+        <div class="feature-box">
+            <div class="icon-box"><i class="fas fa-fingerprint"></i></div>
+            <h3 style="color: #fff;">Username Recon</h3>
+            <p style="color: #888; line-height: 1.6;">
+                Instantly check username availability across social media, coding platforms, and hidden forums. Finding the profile is the first step.
             </p>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-                <span class="status-dot" style="background: #555;"></span> OFFLINE
-            </div>
+        </div>
+
+        <div class="feature-box">
+            <div class="icon-box" style="color: #ff3333;"><i class="fas fa-user-shield"></i></div>
+            <h3 style="color: #fff;">Breach Intelligence</h3>
+            <p style="color: #888; line-height: 1.6;">
+                Our new <strong>Radar</strong> module cross-references identities against 600+ compromised databases (Adobe, LinkedIn, etc.) to assess risk.
+            </p>
+        </div>
+
+        <div class="feature-box">
+            <div class="icon-box" style="color: #00bbff;"><i class="fas fa-network-wired"></i></div>
+            <div class="tool-title">API Access</div>
+            <p style="color: #888; line-height: 1.6;">
+                Developers can integrate our scanning engine directly into their own applications using our high-speed JSON API.
+            </p>
         </div>
 
     </div>
+
 </div>
+
+<script>
+    // Simple Typewriter Effect for the "Fake Terminal"
+    const text = ">> Loading modules...\n>> Connecting to global nodes...\n>> SYSTEM READY. WAITING FOR INPUT...";
+    let i = 0;
+    const speed = 50; 
+
+    function typeWriter() {
+        if (i < text.length) {
+            document.getElementById("typewriter").innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+            i++;
+            setTimeout(typeWriter, speed);
+        }
+    }
+    
+    // Start typing when page loads
+    window.onload = typeWriter;
+</script>
 {% endblock %}
