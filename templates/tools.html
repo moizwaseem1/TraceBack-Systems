@@ -1,48 +1,231 @@
 {% extends "layout.html" %}
 
-{% block content %} 
-<main class="fade-in">
-    <div style="text-align: center; margin-bottom: 50px;">
-        <span class="badge">R&D DIVISION</span>
-        <h1 class="glitched-text">TRACEBACK <span class="highlight">LABS</span></h1>
-        <p style="color: #666;">Experimental protocols and developer resources.</p>
+{% block content %}
+<style>
+    /* R&D SPECIFIC THEME - BLUE NEON */
+    :root {
+        --research-blue: #00f3ff;
+        --warning-orange: #ffb300;
+    }
+
+    .labs-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .labs-badge {
+        background: rgba(0, 243, 255, 0.1);
+        color: var(--research-blue);
+        border: 1px solid var(--research-blue);
+        padding: 5px 15px;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    /* FAKE TERMINAL LOG */
+    .diagnostic-terminal {
+        background: #050505;
+        border-top: 1px solid #333;
+        border-bottom: 1px solid #333;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        color: #555;
+        padding: 10px;
+        margin-bottom: 50px;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .log-line {
+        display: inline-block;
+        animation: scrollText 20s linear infinite;
+    }
+
+    @keyframes scrollText {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+
+    /* THE ARMORY GRID */
+    .armory-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .prototype-card {
+        background: rgba(20, 25, 30, 0.6);
+        border: 1px solid #333;
+        border-radius: 4px;
+        padding: 0;
+        position: relative;
+        transition: 0.3s;
+        overflow: hidden;
+    }
+
+    .prototype-card:hover {
+        border-color: var(--research-blue);
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+        transform: translateY(-5px);
+    }
+
+    .card-header-img {
+        height: 120px;
+        background: linear-gradient(45deg, #111, #1a1a1a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #333;
+        border-bottom: 1px solid #333;
+    }
+
+    .prototype-card:hover .card-header-img {
+        color: var(--research-blue);
+    }
+
+    .card-body { padding: 25px; }
+
+    .tech-tag {
+        font-size: 0.7rem;
+        background: #111;
+        border: 1px solid #444;
+        color: #888;
+        padding: 2px 8px;
+        margin-right: 5px;
+    }
+
+    .status-indicator {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        background: rgba(0,0,0,0.8);
+        padding: 5px 10px;
+        border-radius: 4px;
+        border: 1px solid #333;
+    }
+
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .live { background: var(--research-blue); box-shadow: 0 0 8px var(--research-blue); }
+    .wip { background: var(--warning-orange); }
+    .dead { background: #333; }
+
+    .btn-research {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+        background: rgba(0, 243, 255, 0.1);
+        color: var(--research-blue);
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-top: 20px;
+        border: 1px solid rgba(0, 243, 255, 0.2);
+        transition: 0.3s;
+    }
+    
+    .btn-research:hover {
+        background: var(--research-blue);
+        color: #000;
+    }
+    
+    .btn-disabled {
+        background: transparent;
+        color: #555;
+        border: 1px solid #333;
+        cursor: not-allowed;
+    }
+    .btn-disabled:hover { background: transparent; color: #555; }
+
+</style>
+
+<div class="fade-in">
+    
+    <div class="labs-header">
+        <span class="labs-badge">TRACEBACK // R&D DIVISION</span>
+        <h1 class="glitched-text">EXPERIMENTAL <span style="color: var(--research-blue);">PROTOCOLS</span></h1>
+        <p style="color: #666;">Access to unstable, beta, and future intelligence modules.</p>
     </div>
 
-    <div class="dashboard-grid">
+    <div class="diagnostic-terminal">
+        <div class="log-line">
+            >> SYSTEM CHECK: INTEGRITY 98% ... API GATEWAY: STABLE ... GRAPH ENGINE: COMPILING ... NEURAL NET: OFFLINE ... GEOLOCATION: CALIBRATING ...
+        </div>
+    </div>
+
+    <div class="armory-grid">
         
-        <div class="tool-card" style="border-left: 3px solid #00bbff;">
-            <div class="tool-icon" style="color: #00bbff;"><i class="fas fa-code"></i></div>
-            <div class="tool-title">Developer API</div>
-            <p class="tool-desc">
-                Integrate TraceBack scanning capabilities directly into your own Python or Node.js applications.
-            </p>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-                <span class="status-dot" style="background: #00bbff; box-shadow: 0 0 5px #00bbff;"></span> PUBLIC BETA
+        <div class="prototype-card">
+            <div class="status-indicator" style="color: var(--research-blue); border-color: var(--research-blue);">
+                <span class="dot live"></span> PUBLIC BETA
+            </div>
+            <div class="card-header-img">
+                <i class="fas fa-terminal"></i>
+            </div>
+            <div class="card-body">
+                <h3 style="color: #fff; margin-top: 0;">Rest API v1</h3>
+                <div style="margin-bottom: 15px;">
+                    <span class="tech-tag">JSON</span>
+                    <span class="tech-tag">PYTHON</span>
+                    <span class="tech-tag">REST</span>
+                </div>
+                <p style="color: #999; font-size: 0.9rem; line-height: 1.6;">
+                    Programmatic access to our scanning engine. Integrate username reconnaissance directly into your security tools.
+                </p>
+                <a href="mailto:tracebackintelligence@gmail.com?subject=API%20Access%20Request" class="btn-research">REQUEST KEY ACCESS</a>
             </div>
         </div>
 
-        <div class="tool-card" style="opacity: 0.6; border-style: dashed;">
-            <div class="tool-icon"><i class="fas fa-project-diagram"></i></div>
-            <div class="tool-title">Graph Visualizer</div>
-            <p class="tool-desc">
-                Generates a visual link map of a target's digital footprint to identify clusters of activity.
-            </p>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-                <span class="status-dot" style="background: #fcba03;"></span> IN DEVELOPMENT
+        <div class="prototype-card">
+            <div class="status-indicator" style="color: var(--warning-orange); border-color: var(--warning-orange);">
+                <span class="dot wip"></span> PROTOTYPING
+            </div>
+            <div class="card-header-img">
+                <i class="fas fa-project-diagram"></i>
+            </div>
+            <div class="card-body">
+                <h3 style="color: #fff; margin-top: 0;">Link Graph</h3>
+                <div style="margin-bottom: 15px;">
+                    <span class="tech-tag">WEBGL</span>
+                    <span class="tech-tag">D3.JS</span>
+                </div>
+                <p style="color: #999; font-size: 0.9rem; line-height: 1.6;">
+                    3D visualization of digital footprints. Identifies clusters of activity and cross-platform connections visually.
+                </p>
+                <button class="btn-research btn-disabled">COMPILE IN PROGRESS</button>
             </div>
         </div>
 
-        <div class="tool-card" style="opacity: 0.6; border-style: dashed;">
-            <div class="tool-icon"><i class="fas fa-globe"></i></div>
-            <div class="tool-title">Geo-Tracer</div>
-            <p class="tool-desc">
-                Resolve IP addresses to physical locations and ISP data for network auditing.
-            </p>
-            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
-                <span class="status-dot" style="background: #555;"></span> PLANNED Q3 2026
+        <div class="prototype-card">
+            <div class="status-indicator" style="color: #666; border-color: #444;">
+                <span class="dot dead"></span> CONCEPT
+            </div>
+            <div class="card-header-img">
+                <i class="fas fa-map-marked-alt"></i>
+            </div>
+            <div class="card-body">
+                <h3 style="color: #fff; margin-top: 0;">Geo-Tracer</h3>
+                <div style="margin-bottom: 15px;">
+                    <span class="tech-tag">IP</span>
+                    <span class="tech-tag">ISP</span>
+                </div>
+                <p style="color: #999; font-size: 0.9rem; line-height: 1.6;">
+                    Advanced IP resolution to map physical server locations and ISP backbone data for network auditing.
+                </p>
+                <button class="btn-research btn-disabled">AWAITING APPROVAL</button>
             </div>
         </div>
 
     </div>
-</main>
+</div>
 {% endblock %}
