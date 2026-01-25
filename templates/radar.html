@@ -109,12 +109,12 @@
             resultsDiv.innerHTML = '';
 
             if (data.length === 0) {
-                resultsDiv.innerHTML = '<div style="color:#00ff41; margin-top:20px;">NO CORRELATED BREACHES FOUND.</div>';
+                resultsDiv.innerHTML = '<div style="color:#00ff41; margin-top:20px;">NO CORRELATED BREACHES FOUND. SYSTEM SECURE.</div>';
                 return;
             }
 
             data.forEach((hit, index) => {
-                // 1. Add Blip to Radar
+                // 1. Add Blip (Same as before)
                 const blip = document.createElement('div');
                 blip.style.position = 'absolute';
                 blip.style.width = '6px'; blip.style.height = '6px';
@@ -124,16 +124,37 @@
                 blip.style.left = Math.floor(Math.random() * 70 + 15) + '%';
                 scope.appendChild(blip);
 
-                // 2. Add Result Card
+                // 2. Generate Action Steps (The New Feature)
+                let actionSteps = "";
+                if (hit.risk === "CRITICAL" || hit.risk === "HIGH") {
+                    actionSteps = `
+                        <div style="margin-top:10px; border-top:1px solid #ff3333; padding-top:10px; font-size:0.8rem; color:#ccc;">
+                            <strong style="color:#ff3333;">⚠ REMEDIATION PROTOCOL:</strong>
+                            <ul style="margin:5px 0 0 20px; padding:0;">
+                                <li>IMMEDIATELY change password on <strong>${hit.site}</strong>.</li>
+                                <li>If you use this password elsewhere, change it there too.</li>
+                                <li>Enable Two-Factor Authentication (2FA) if available.</li>
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                // 3. Add Result Card
                 const card = document.createElement('div');
                 card.className = 'breach-card';
+                card.style.flexDirection = 'column'; // Changed to column to fit the steps
+                card.style.alignItems = 'flex-start'; // Align left
                 card.style.animationDelay = `${index * 0.1}s`;
+                
                 card.innerHTML = `
-                    <div style="text-align:left;">
-                        <h3 style="margin:0; color:#fff;">${hit.site.toUpperCase()}</h3>
-                        <div style="font-size:0.8rem; color:#888;">BREACH DATE: ${hit.breach_date}</div>
+                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h3 style="margin:0; color:#fff;">${hit.site.toUpperCase()}</h3>
+                            <div style="font-size:0.8rem; color:#888;">BREACH DATE: ${hit.breach_date}</div>
+                        </div>
+                        <div class="danger-tag">LEAK VERIFIED</div>
                     </div>
-                    <div class="danger-tag">LEAK VERIFIED</div>
+                    ${actionSteps} 
                 `;
                 resultsDiv.appendChild(card);
             });
