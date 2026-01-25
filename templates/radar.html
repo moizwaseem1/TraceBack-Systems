@@ -94,10 +94,13 @@
         const resultsDiv = document.getElementById('radarResults');
         const scope = document.querySelector('.radar-scope');
 
-        if(!user) return alert("ENTER TARGET IDENTIFIER");
+        scope.innerHTML = `
+            <div class="radar-grid"></div>
+            <div class="radar-line"></div>
+        `;
 
         resultsDiv.innerHTML = '<div style="color:#ff3333; margin-top:20px;" class="blink">SEARCHING DARK WEB NODES...</div>';
-
+        
         try {
             const response = await fetch('/scan-breach', {
                 method: 'POST',
