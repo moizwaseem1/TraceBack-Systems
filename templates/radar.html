@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* RADAR ANIMATION & UI */
+    .radar-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+        text-align: center;
+    }
+
+    .radar-scope {
+        width: 280px;
+        height: 280px;
+        border: 2px solid #333;
+        border-radius: 50%;
+        position: relative;
+        background: radial-gradient(circle, rgba(0,20,0,0.8) 0%, rgba(0,0,0,1) 100%);
+        box-shadow: 0 0 40px rgba(0, 255, 65, 0.05);
+        margin-bottom: 40px;
+        overflow: hidden;
+    }
+    
+    .radar-grid {
+        position: absolute; width: 100%; height: 100%;
+        background-image: 
+            linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+        background-size: 40px 40px;
+        border-radius: 50%;
+    }
+
+    .radar-line {
+        width: 50%; height: 2px;
+        background: var(--neon);
+        position: absolute; top: 50%; left: 50%;
+        transform-origin: 0 0;
+        animation: scan 2s infinite linear;
+        box-shadow: 0 0 15px var(--neon);
+    }
+    
+    .radar-line::after {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+        background: linear-gradient(to bottom, rgba(0,255,65,0.3), transparent);
+        transform: rotate(-90deg); transform-origin: 0 0;
+    }
+
+    @keyframes scan { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    /* RESULTS CARDS */
+    .breach-card {
+        background: rgba(20, 0, 0, 0.6);
+        border-left: 3px solid #ff3333;
+        padding: 15px; margin-bottom: 10px;
+        width: 100%; max-width: 600px;
+        display: flex; justify-content: space-between; align-items: center;
+        opacity: 0; animation: slideIn 0.5s forwards;
+    }
+    
+    .danger-tag {
+        color: #ff3333; border: 1px solid #ff3333; 
+        padding: 4px 8px; font-size: 0.7rem; letter-spacing: 1px;
+    }
+
+    @keyframes slideIn { to { opacity: 1; } }
+</style>
+
+<div class="radar-wrapper fade-in">
+    <h1 style="color: var(--neon); letter-spacing: -1px;">BREACH RADAR // LIVE</h1>
+    <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">
+        Correlating username footprint with 650+ compromised databases.
+    </p>
+
+    <div class="radar-scope">
+        <div class="radar-grid"></div>
+        <div class="radar-line"></div>
+        </div>
+
+    <div class="input-group" style="max-width: 500px; width: 90%;">
+        <span class="prompt" style="color:#ff3333;">target@system:~#</span>
+        <input type="text" id="radarInput" placeholder="Enter Username..." autocomplete="off">
+        <button onclick="runBreachScan()" class="btn-neon" style="border-color:#ff3333; color:#ff3333;">SCAN</button>
+    </div>
+
+    <div id="radarResults" style="width: 90%; max-width: 600px; margin-top: 30px;"></div>
+</div>
+
+<script>
+    async function runBreachScan() {
+        const user = document.getElementById('radarInput').value;
+        const resultsDiv = document.getElementById('radarResults');
+        const scope = document.querySelector('.radar-scope');
+
+        if(!user) return alert("ENTER TARGET IDENTIFIER");
+
+        resultsDiv.innerHTML = '<div style="color:#ff3333; margin-top:20px;" class="blink">SEARCHING DARK WEB NODES...</div>';
+
+        try {
+            const response = await fetch('/scan-breach', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username: user})
+            });
+
+            const data = await response.json();
+            resultsDiv.innerHTML = '';
+
+            if (data.length === 0) {
+                resultsDiv.innerHTML = '<div style="color:#00ff41; margin-top:20px;">NO CORRELATED BREACHES FOUND.</div>';
+                return;
+            }
+
+            data.forEach((hit, index) => {
+                // 1. Add Blip to Radar
+                const blip = document.createElement('div');
+                blip.style.position = 'absolute';
+                blip.style.width = '6px'; blip.style.height = '6px';
+                blip.style.background = '#ff3333'; blip.style.borderRadius = '50%';
+                blip.style.boxShadow = '0 0 10px #ff3333';
+                blip.style.top = Math.floor(Math.random() * 70 + 15) + '%';
+                blip.style.left = Math.floor(Math.random() * 70 + 15) + '%';
+                scope.appendChild(blip);
+
+                // 2. Add Result Card
+                const card = document.createElement('div');
+                card.className = 'breach-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.innerHTML = `
+                    <div style="text-align:left;">
+                        <h3 style="margin:0; color:#fff;">${hit.site.toUpperCase()}</h3>
+                        <div style="font-size:0.8rem; color:#888;">BREACH DATE: ${hit.breach_date}</div>
+                    </div>
+                    <div class="danger-tag">LEAK VERIFIED</div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+
+        } catch (e) {
+            console.error(e);
+            resultsDiv.innerHTML = "CONNECTION FAILURE.";
+        }
+    }
+</script>
+{% endblock %}
