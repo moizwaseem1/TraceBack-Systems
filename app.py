@@ -113,6 +113,10 @@ def get_live_breach_data():
 def home():
     return render_template('index.html') # Assuming you have an index.html
 
+@app.route('/scanner')
+def scanner_page():
+    return render_template('scanner.html')
+
 @app.route('/radar')
 def radar_page():
     return render_template('radar.html')
