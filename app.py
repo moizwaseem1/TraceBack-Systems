@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import requests
 import json
 import concurrent.futures
 import os
-from flask import send_from_directory
+from datetime import datetime
 
 # ==========================================
 # APP CONFIGURATION (Vercel-Safe)
@@ -53,6 +53,135 @@ def check_site(site, username):
     except:
         return None
 
+# --- CONFIGURATION ---
+# Global cache to store breach data so we don't spam the API
+BREACH_CACHE = {
+    "data": {},
+    "last_updated": None
+}
+
+def get_live_breach_data():
+    """
+    Fetches the list of all breached sites from HaveIBeenPwned.
+    Refreshes data only once every 24 hours.
+    """
+    global BREACH_CACHE
+    
+    # Check if cache is valid (less than 24 hours old)
+    if BREACH_CACHE["data"] and BREACH_CACHE["last_updated"]:
+        time_diff = (datetime.now() - BREACH_CACHE["last_updated"]).total_seconds()
+        if time_diff < 86400: 
+            return BREACH_CACHE["data"]
+
+    print("⚡ UPDATING BREACH DATABASE...")
+    try:
+        # User-Agent is required by HIBP
+        headers = {'User-Agent': 'TraceBack-Systems-Scanner'}
+        url = "https://haveibeenpwned.com/api/v3/breaches"
+        
+        r = requests.get(url, headers=headers, timeout=10)
+        
+        if r.status_code == 200:
+            raw_list = r.json()
+            new_data = {}
+            for breach in raw_list:
+                # Map Domain to Breach Info
+                key = breach['Domain'].lower() 
+                new_data[key] = {
+                    "date": breach['BreachDate'],
+                    "count": breach['PwnCount'],
+                    "description": breach['Description'],
+                    "risk": "HIGH" # All verified breaches are high risk
+                }
+                # Also map the Name (e.g. 'Adobe') just in case
+                new_data[breach['Name'].lower()] = new_data[key]
+                
+            BREACH_CACHE["data"] = new_data
+            BREACH_CACHE["last_updated"] = datetime.now()
+            print(f"✅ LOADED {len(new_data)} BREACHED SITES.")
+            return new_data
+        else:
+            return BREACH_CACHE["data"] # Fail safe: return old data
+            
+    except Exception as e:
+        print(f"⚠️ API ERROR: {e}")
+        return BREACH_CACHE["data"]
+
+# --- ROUTES ---
+
+@app.route('/')
+def home():
+    return render_template('index.html') # Assuming you have an index.html
+
+@app.route('/radar')
+def radar_page():
+    return render_template('radar.html')
+
+@app.route('/scan-breach', methods=['POST'])
+def scan_breach():
+    data = request.json
+    username = data.get('username')
+    
+    if not username:
+        return jsonify({"error": "Target Required"}), 400
+
+    # 1. Get Live Breach Data
+    breach_db = get_live_breach_data()
+    
+    # 2. Load Supported Sites
+    # Ensure 'sites.json' exists in your folder
+    try:
+        with open('sites.json', 'r') as f:
+            site_data = json.load(f)
+    except FileNotFoundError:
+        return jsonify({"error": "System Error: sites.json missing"}), 500
+    
+    # 3. Filter: Only scan sites that are KNOWN to be breached
+    target_sites = []
+    for site in site_data['sites']:
+        # Extract domain key (e.g., myspace.com -> myspace)
+        try:
+            domain_part = site['url'].split('/')[2].replace('www.', '').lower()
+        except:
+            domain_part = site['name'].lower()
+            
+        site_name = site['name'].lower()
+        
+        # Check if this site is in the breach database
+        match = None
+        if site_name in breach_db:
+            match = breach_db[site_name]
+        elif domain_part in breach_db:
+            match = breach_db[domain_part]
+            
+        if match:
+            site['breach_details'] = match
+            target_sites.append(site)
+
+    # 4. Perform the Scan (Check if user exists on these breached sites)
+    results = []
+    
+    # Limit to first 10 matches for speed in this demo
+    for site in target_sites[:10]:
+        try:
+            check_url = site['url'].replace('{}', username)
+            # Fast timeout
+            r = requests.get(check_url, timeout=3)
+            
+            # If status is 200, user exists -> VULNERABLE
+            if r.status_code == 200:
+                results.append({
+                    "site": site['name'],
+                    "status": "VULNERABLE",
+                    "breach_date": site['breach_details']['date'],
+                    "pwn_count": site['breach_details']['count'],
+                    "risk": "CRITICAL"
+                })
+        except:
+            continue
+
+    return jsonify(results)
+    
 # ==========================================
 # PAGE ROUTES (Navigation)
 # ==========================================
