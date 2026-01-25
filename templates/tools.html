@@ -12,6 +12,7 @@
         text-align: center;
         margin-bottom: 40px;
         position: relative;
+        padding: 0 10px;
     }
     
     .labs-badge {
@@ -32,12 +33,13 @@
         border-top: 1px solid #333;
         border-bottom: 1px solid #333;
         font-family: 'JetBrains Mono', monospace;
-        font-size: 0.8rem;
+        font-size: 0.7rem; /* Smaller font for mobile */
         color: #555;
         padding: 10px;
-        margin-bottom: 50px;
+        margin-bottom: 40px;
         overflow: hidden;
         white-space: nowrap;
+        position: relative;
     }
 
     .log-line {
@@ -50,12 +52,15 @@
         100% { transform: translateX(-100%); }
     }
 
-    /* THE ARMORY GRID */
+    /* THE ARMORY GRID - FIXED FOR MOBILE */
     .armory-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 30px;
-        padding: 0 20px;
+        /* Changed from 350px to 280px so it fits on iPhone SE/Small Androids */
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+        gap: 25px;
+        padding: 0 15px; /* Reduced padding to give cards more room */
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .prototype-card {
@@ -75,12 +80,12 @@
     }
 
     .card-header-img {
-        height: 120px;
+        height: 100px; /* Slightly shorter for mobile balance */
         background: linear-gradient(45deg, #111, #1a1a1a);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 3rem;
+        font-size: 2.5rem;
         color: #333;
         border-bottom: 1px solid #333;
     }
@@ -89,32 +94,35 @@
         color: var(--research-blue);
     }
 
-    .card-body { padding: 25px; }
+    .card-body { padding: 20px; }
 
     .tech-tag {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         background: #111;
         border: 1px solid #444;
         color: #888;
-        padding: 2px 8px;
-        margin-right: 5px;
+        padding: 3px 6px;
+        margin-right: 4px;
+        display: inline-block; /* Prevents breaking on small screens */
+        margin-bottom: 5px;
     }
 
     .status-indicator {
         position: absolute;
-        top: 15px;
-        right: 15px;
-        font-size: 0.7rem;
+        top: 10px;
+        right: 10px;
+        font-size: 0.6rem;
         font-weight: bold;
         display: flex;
         align-items: center;
-        background: rgba(0,0,0,0.8);
-        padding: 5px 10px;
+        background: rgba(0,0,0,0.9);
+        padding: 4px 8px;
         border-radius: 4px;
         border: 1px solid #333;
+        z-index: 2;
     }
 
-    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 5px; }
     .live { background: var(--research-blue); box-shadow: 0 0 8px var(--research-blue); }
     .wip { background: var(--warning-orange); }
     .dead { background: #333; }
@@ -128,8 +136,8 @@
         color: var(--research-blue);
         text-decoration: none;
         font-weight: bold;
-        font-size: 0.9rem;
-        margin-top: 20px;
+        font-size: 0.8rem;
+        margin-top: 15px;
         border: 1px solid rgba(0, 243, 255, 0.2);
         transition: 0.3s;
     }
@@ -147,6 +155,12 @@
     }
     .btn-disabled:hover { background: transparent; color: #555; }
 
+    /* MOBILE SPECIFIC TWEAKS */
+    @media (max-width: 600px) {
+        .labs-header h1 { font-size: 1.8rem; }
+        .armory-grid { gap: 20px; }
+    }
+
 </style>
 
 <div class="fade-in">
@@ -154,7 +168,7 @@
     <div class="labs-header">
         <span class="labs-badge">TRACEBACK // R&D DIVISION</span>
         <h1 class="glitched-text">EXPERIMENTAL <span style="color: var(--research-blue);">PROTOCOLS</span></h1>
-        <p style="color: #666;">Access to unstable, beta, and future intelligence modules.</p>
+        <p style="color: #666; font-size: 0.9rem;">Access to unstable, beta, and future intelligence modules.</p>
     </div>
 
     <div class="diagnostic-terminal">
@@ -173,13 +187,13 @@
                 <i class="fas fa-terminal"></i>
             </div>
             <div class="card-body">
-                <h3 style="color: #fff; margin-top: 0;">Rest API v1</h3>
+                <h3 style="color: #fff; margin-top: 0; font-size: 1.2rem;">Rest API v1</h3>
                 <div style="margin-bottom: 15px;">
                     <span class="tech-tag">JSON</span>
                     <span class="tech-tag">PYTHON</span>
                     <span class="tech-tag">REST</span>
                 </div>
-                <p style="color: #999; font-size: 0.9rem; line-height: 1.6;">
+                <p style="color: #999; font-size: 0.85rem; line-height: 1.6;">
                     Programmatic access to our scanning engine. Integrate username reconnaissance directly into your security tools.
                 </p>
                 <a href="mailto:tracebackintelligence@gmail.com?subject=API%20Access%20Request" class="btn-research">REQUEST KEY ACCESS</a>
@@ -194,12 +208,12 @@
                 <i class="fas fa-project-diagram"></i>
             </div>
             <div class="card-body">
-                <h3 style="color: #fff; margin-top: 0;">Link Graph</h3>
+                <h3 style="color: #fff; margin-top: 0; font-size: 1.2rem;">Link Graph</h3>
                 <div style="margin-bottom: 15px;">
                     <span class="tech-tag">WEBGL</span>
                     <span class="tech-tag">D3.JS</span>
                 </div>
-                <p style="color: #999; font-size: 0.9rem; line-height: 1.6;">
+                <p style="color: #999; font-size: 0.85rem; line-height: 1.6;">
                     3D visualization of digital footprints. Identifies clusters of activity and cross-platform connections visually.
                 </p>
                 <button class="btn-research btn-disabled">COMPILE IN PROGRESS</button>
@@ -214,12 +228,12 @@
                 <i class="fas fa-map-marked-alt"></i>
             </div>
             <div class="card-body">
-                <h3 style="color: #fff; margin-top: 0;">Geo-Tracer</h3>
+                <h3 style="color: #fff; margin-top: 0; font-size: 1.2rem;">Geo-Tracer</h3>
                 <div style="margin-bottom: 15px;">
                     <span class="tech-tag">IP</span>
                     <span class="tech-tag">ISP</span>
                 </div>
-                <p style="color: #999; font-size: 0.9rem; line-height: 1.6;">
+                <p style="color: #999; font-size: 0.85rem; line-height: 1.6;">
                     Advanced IP resolution to map physical server locations and ISP backbone data for network auditing.
                 </p>
                 <button class="btn-research btn-disabled">AWAITING APPROVAL</button>
