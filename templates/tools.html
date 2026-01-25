@@ -1,20 +1,48 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<main class="center-content">
-    <div class="lock-icon">🔒</div>
-    <h1>Restricted Access</h1>
-    <p>The <strong>TraceBack Labs</strong> division is currently developing advanced tools.</p>
-    
-    <div class="roadmap">
-        <div class="roadmap-item">
-            <span class="status-dot orange"></span>
-            <span>Email Breach Checker (Dev Phase)</span>
+<main class="fade-in">
+    <div style="text-align: center; margin-bottom: 50px;">
+        <span class="badge">R&D DIVISION</span>
+        <h1 class="glitched-text">TRACEBACK <span class="highlight">LABS</span></h1>
+        <p style="color: #666;">Experimental protocols and developer resources.</p>
+    </div>
+
+    <div class="dashboard-grid">
+        
+        <div class="tool-card" style="border-left: 3px solid #00bbff;">
+            <div class="tool-icon" style="color: #00bbff;"><i class="fas fa-code"></i></div>
+            <div class="tool-title">Developer API</div>
+            <p class="tool-desc">
+                Integrate TraceBack scanning capabilities directly into your own Python or Node.js applications.
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
+                <span class="status-dot" style="background: #00bbff; box-shadow: 0 0 5px #00bbff;"></span> PUBLIC BETA
+            </div>
         </div>
-        <div class="roadmap-item">
-            <span class="status-dot red"></span>
-            <span>Password Entropy Analyzer (Planning)</span>
+
+        <div class="tool-card" style="opacity: 0.6; border-style: dashed;">
+            <div class="tool-icon"><i class="fas fa-project-diagram"></i></div>
+            <div class="tool-title">Graph Visualizer</div>
+            <p class="tool-desc">
+                Generates a visual link map of a target's digital footprint to identify clusters of activity.
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
+                <span class="status-dot" style="background: #fcba03;"></span> IN DEVELOPMENT
+            </div>
         </div>
+
+        <div class="tool-card" style="opacity: 0.6; border-style: dashed;">
+            <div class="tool-icon"><i class="fas fa-globe"></i></div>
+            <div class="tool-title">Geo-Tracer</div>
+            <p class="tool-desc">
+                Resolve IP addresses to physical locations and ISP data for network auditing.
+            </p>
+            <div style="margin-top: 20px; font-size: 0.8rem; color: #666;">
+                <span class="status-dot" style="background: #555;"></span> PLANNED Q3 2026
+            </div>
+        </div>
+
     </div>
 </main>
 {% endblock %}
