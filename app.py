@@ -120,6 +120,37 @@ def scanner_page():
 @app.route('/radar')
 def radar_page():
     return render_template('radar.html')
+    
+def check_site_status(url, username, error_text):
+    """
+    Returns TRUE if user exists, FALSE if not.
+    Uses headers and content checking to avoid false positives.
+    """
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+    
+    try:
+        r = requests.get(url, headers=headers, timeout=5)
+        
+        # 1. If status is 404, user definitely doesn't exist
+        if r.status_code == 404:
+            return False
+            
+        # 2. If status is 200, we must check for "Error Text"
+        # If the specific error text is IN the HTML, the user does NOT exist.
+        if error_text and error_text in r.text:
+            return False
+            
+        # 3. Special Case: If we got blocked (403/429), assume False to be safe
+        if r.status_code in [403, 429]:
+            return False
+
+        # If we passed all checks, the user exists
+        return True
+        
+    except:
+        return False
 
 @app.route('/scan-breach', methods=['POST'])
 def scan_breach():
@@ -129,60 +160,43 @@ def scan_breach():
     if not username:
         return jsonify({"error": "Target Required"}), 400
 
-    # 1. Get Live Breach Data
     breach_db = get_live_breach_data()
     
-    # 2. Load Supported Sites
-    # Ensure 'sites.json' exists in your folder
     try:
         with open('sites.json', 'r') as f:
             site_data = json.load(f)
-    except FileNotFoundError:
-        return jsonify({"error": "System Error: sites.json missing"}), 500
-    
-    # 3. Filter: Only scan sites that are KNOWN to be breached
+    except:
+        return jsonify([]), 500
+
     target_sites = []
+    
+    # 1. Filter sites that are in the Breach DB
     for site in site_data['sites']:
-        # Extract domain key (e.g., myspace.com -> myspace)
-        try:
-            domain_part = site['url'].split('/')[2].replace('www.', '').lower()
-        except:
-            domain_part = site['name'].lower()
-            
         site_name = site['name'].lower()
-        
-        # Check if this site is in the breach database
-        match = None
         if site_name in breach_db:
-            match = breach_db[site_name]
-        elif domain_part in breach_db:
-            match = breach_db[domain_part]
-            
-        if match:
-            site['breach_details'] = match
+            site['breach_details'] = breach_db[site_name]
             target_sites.append(site)
 
-    # 4. Perform the Scan (Check if user exists on these breached sites)
     results = []
     
-    # Limit to first 10 matches for speed in this demo
-    for site in target_sites[:10]:
-        try:
-            check_url = site['url'].replace('{}', username)
-            # Fast timeout
-            r = requests.get(check_url, timeout=3)
-            
-            # If status is 200, user exists -> VULNERABLE
-            if r.status_code == 200:
-                results.append({
-                    "site": site['name'],
-                    "status": "VULNERABLE",
-                    "breach_date": site['breach_details']['date'],
-                    "pwn_count": site['breach_details']['count'],
-                    "risk": "CRITICAL"
-                })
-        except:
-            continue
+    # 2. Verify existence using the new ROBUST check
+    for site in target_sites:
+        # Check if the user actually exists on the site first
+        user_exists = check_site_status(
+            site['url'].replace('{}', username), 
+            username, 
+            site.get('error_msg')
+        )
+        
+        if user_exists:
+            results.append({
+                "site": site['name'],
+                "status": "VULNERABLE",
+                "breach_date": site['breach_details']['date'],
+                "risk": "HIGH",
+                # We change wording to be truthful:
+                "description": "Account exists on breached platform." 
+            })
 
     return jsonify(results)
     
@@ -223,32 +237,23 @@ def terms():
 # ==========================================
 
 @app.route('/scan', methods=['POST'])
-def scan():
-    """
-    Receives a username, scans 50+ sites in parallel, 
-    and returns ONLY the found profiles.
-    """
+def scan_username():
     data = request.json
     username = data.get('username')
     
-    if not username:
-        return jsonify([])
-
-    sites = load_sites()
-    results = []
+    with open('sites.json', 'r') as f:
+        site_data = json.load(f)
+        
+    found_accounts = []
     
-    # High-Performance Multi-threading
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        future_to_site = {executor.submit(check_site, site, username): site for site in sites}
-        for future in concurrent.futures.as_completed(future_to_site):
-            try:
-                result = future.result()
-                if result: # Only append if result is not None (i.e., User Found)
-                    results.append(result)
-            except Exception as e:
-                continue
+    for site in site_data['sites']:
+        if check_site_status(site['url'].replace('{}', username), username, site.get('error_msg')):
+            found_accounts.append({
+                "site": site['name'],
+                "url": site['url'].replace('{}', username)
+            })
             
-    return jsonify(results)
+    return jsonify(found_accounts)
 
 @app.route('/join-waitlist', methods=['POST'])
 def join_waitlist():
