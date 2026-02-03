@@ -150,12 +150,8 @@
                 card.style.animationDelay = `${index * 0.1}s`;
                 
                 card.innerHTML = `
-                    <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <h3 style="margin:0; color:#fff;">${hit.site.toUpperCase()}</h3>
-                            <div style="font-size:0.8rem; color:#888;">BREACH DATE: ${hit.breach_date}</div>
-                        </div>
-                        <div class="danger-tag">LEAK VERIFIED</div>
+                    <div style="font-size:0.8rem; color:#888;">SITE BREACHED: ${hit.breach_date}</div>
+                        <div class="danger-tag" style="background: #ffb300; color: #000; border: none;">POTENTIAL EXPOSURE</div>
                     </div>
                     ${actionSteps} 
                 `;
