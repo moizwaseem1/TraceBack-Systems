@@ -25,33 +25,49 @@ def load_sites():
         print("Error: sites.json not found.")
         return []
 
-def check_site(site, username):
-    """
-    Checks a single website.
-    RETURNS: The result ONLY if the user is found (Status 200).
-    """
-    url = site['url'].format(username)
+def check_site_status(url, error_text):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
-    
     try:
-        # Timeout set to 5 seconds to keep the tool fast
-        response = requests.get(url, headers=headers, timeout=5)
+        r = requests.get(url, headers=headers, timeout=5)
         
-        # STRICT MODE: Only return if we get a solid 200 OK
-        if response.status_code == 200:
-            return {
-                "site": site['name'],
-                "url": url,
-                "status": "FOUND",
-                "color": "green"
-            }
-        else:
-            # We return None so we can filter it out easily later
-            return None
+        # 1. Standard 404 check
+        if r.status_code == 404:
+            return False
+            
+        # 2. "Soft 404" Check (The Fix for Twitch/Pinterest)
+        # We check if the specific error text exists in the HTML
+        if error_text and error_text.lower() in r.text.lower():
+            return False
+            
+        return True
     except:
-        return None
+        return False
+
+# UPDATE YOUR ROUTE TO USE THIS FUNCTION
+@app.route('/scan', methods=['POST'])
+def scan_username():
+    data = request.json
+    username = data.get('username')
+    
+    with open('sites.json', 'r') as f:
+        site_data = json.load(f)
+        
+    found_accounts = []
+    
+    for site in site_data['sites']:
+        # We pass the URL AND the unique error message for that site
+        url = site['url'].replace('{}', username)
+        error_msg = site.get('error_msg')
+        
+        if check_site_status(url, error_msg):
+            found_accounts.append({
+                "site": site['name'],
+                "url": url
+            })
+            
+    return jsonify(found_accounts)
 
 # --- CONFIGURATION ---
 # Global cache to store breach data so we don't spam the API
@@ -235,25 +251,6 @@ def terms():
 # ==========================================
 # API ROUTES (The Logic)
 # ==========================================
-
-@app.route('/scan', methods=['POST'])
-def scan_username():
-    data = request.json
-    username = data.get('username')
-    
-    with open('sites.json', 'r') as f:
-        site_data = json.load(f)
-        
-    found_accounts = []
-    
-    for site in site_data['sites']:
-        if check_site_status(site['url'].replace('{}', username), username, site.get('error_msg')):
-            found_accounts.append({
-                "site": site['name'],
-                "url": site['url'].replace('{}', username)
-            })
-            
-    return jsonify(found_accounts)
 
 @app.route('/join-waitlist', methods=['POST'])
 def join_waitlist():
