@@ -3,11 +3,9 @@
     { "name": "GitHub", "url": "https://github.com/{}", "error_msg": "Not Found" },
     { "name": "Reddit", "url": "https://www.reddit.com/user/{}", "error_msg": "page not found" },
     { "name": "Twitch", "url": "https://m.twitch.tv/{}", "error_msg": "content is unavailable" },
-    { "name": "Pinterest", "url": "https://www.pinterest.com/{}/", "error_msg": "find that page" },
     { "name": "SoundCloud", "url": "https://soundcloud.com/{}", "error_msg": "not find that user" },
     { "name": "Spotify", "url": "https://open.spotify.com/user/{}", "error_msg": "Page not found" },
     { "name": "Medium", "url": "https://medium.com/@{}", "error_msg": "404" },
-    { "name": "Vimeo", "url": "https://vimeo.com/{}", "error_msg": "recaptcha_content" },
     { "name": "Wattpad", "url": "https://www.wattpad.com/user/{}", "error_msg": "User not found" },
     { "name": "Steam", "url": "https://steamcommunity.com/id/{}", "error_msg": "specified profile could not be found" },
     { "name": "WordPress", "url": "https://{}.wordpress.com/", "error_msg": "Do you want to register" },
@@ -36,7 +34,6 @@
     { "name": "Speedrun", "url": "https://www.speedrun.com/user/{}", "error_msg": "404" },
     { "name": "Etsy", "url": "https://www.etsy.com/people/{}", "error_msg": "Uh oh" },
     { "name": "CashApp", "url": "https://cash.app/${}", "error_msg": "Not Found" },
-    { "name": "Linktree", "url": "https://linktr.ee/{}", "error_msg": "doesn’t exist" },
     { "name": "Freelancer", "url": "https://www.freelancer.com/u/{}", "error_msg": "User not found" },
     { "name": "TripAdvisor", "url": "https://www.tripadvisor.com/Profile/{}", "error_msg": "not available" },
     { "name": "9GAG", "url": "https://9gag.com/u/{}", "error_msg": "404" },
@@ -51,6 +48,7 @@
     { "name": "Substack", "url": "https://{}.substack.com", "error_msg": "404" },
     { "name": "HackerNews", "url": "https://news.ycombinator.com/user?id={}", "error_msg": "No such user" },
     { "name": "TryHackMe", "url": "https://tryhackme.com/p/{}", "error_msg": "User not found" },
-    { "name": "HackTheBox", "url": "https://app.hackthebox.com/profile/{}", "error_msg": "404" }
+    { "name": "HackTheBox", "url": "https://app.hackthebox.com/profile/{}", "error_msg": "404" },
+    { "name": "Vimeo", "url": "https://vimeo.com/{}", "error_msg": "recaptcha" }
   ]
 }
