@@ -58,50 +58,60 @@ def get_live_breach_data():
 
 # --- REPLACE THIS FUNCTION IN APP.PY ---
 
+# --- REPLACE THIS FUNCTION IN APP.PY ---
+
 def check_site_status(url, error_text):
     """
-    STRICT MODE: Checks for Redirects, WAFs, and Error Text.
+    STRICT MODE: Filters out WAF blocks, Captchas, and Soft 404s.
     """
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9',
+        # Using a standard Linux User-Agent to look less suspicious
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Connection': 'keep-alive',
     }
     try:
-        # We allow redirects to track them
+        # allow_redirects=True lets us see if we get bumped to a login page
         r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
         
-        # 1. Standard 404 Check
+        # DEBUG: Print what we actually found (Check your Vercel logs for this!)
+        # print(f"Checking {url} -> Status: {r.status_code} | Title: {r.text[:100]}")
+
+        # 1. Hard 404 Check (The most reliable)
         if r.status_code == 404:
             return False
             
-        # 2. WAF / Captcha / Login Page Check (CRITICAL FIX)
-        # If the page asks for "Login" or "Verify", it's not a public profile.
-        # We treat this as False to avoid False Positives.
-        block_triggers = [
-            "captcha", "verify you are human", "cloudflare", 
-            "access denied", "sign up", "log in", "login"
+        # 2. WAF & Bot Detection Check (The Fix for "Fake" Results)
+        # If the page title indicates a block, it is NOT a profile.
+        page_text = r.text.lower()
+        block_keywords = [
+            "<title>access denied</title>",
+            "<title>just a moment...</title>",
+            "<title>security challenge</title>",
+            "<title>attention required!</title>",
+            "verify you are human",
+            "captcha",
+            "cloudflare",
+            "incapsula"
         ]
-        for trigger in block_triggers:
-            if trigger in r.text.lower():
-                # Special case: Some sites have "Login" in the header, ignore those.
-                # But for a profile page, a big "Login" prompt usually means restricted/missing.
-                # For safety, if we see 'captcha' or 'cloudflare', strictly return False.
-                if trigger in ["captcha", "verify you are human", "cloudflare"]:
-                    return False
+        
+        for keyword in block_keywords:
+            if keyword in page_text:
+                return False # We got blocked, so assume user not found to be safe
 
-        # 3. Soft 404 (Error Text from sites.json)
-        if error_text and error_text.lower() in r.text.lower():
+        # 3. "Soft 404" Check (Specific Site Errors)
+        if error_text and error_text.lower() in page_text:
             return False
             
-        # 4. Redirect Check (The "Home Page" Trap)
-        # If we requested ".../username" but got sent to "twitch.tv/" (shorter URL), 
-        # it means the user doesn't exist.
-        if len(r.history) > 0:
-            if len(r.url) < len(url) - 2: # If final URL is significantly shorter
-                return False
-                
+        # 4. Login Page Trap
+        # If we got redirected to a login page, the profile is not public/doesn't exist
+        if "login" in r.url or "signin" in r.url:
+            return False
+            
         return True
-    except:
+    except Exception as e:
+        # print(f"Error checking {url}: {e}")
         return False
 
 # ==========================================
