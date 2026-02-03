@@ -56,30 +56,50 @@ def get_live_breach_data():
         print(f"⚠️ API ERROR: {e}")
         return BREACH_CACHE["data"]
 
+# --- REPLACE THIS FUNCTION IN APP.PY ---
+
 def check_site_status(url, error_text):
     """
-    Unified function to check if a user exists.
-    Returns True if user exists, False if not.
+    STRICT MODE: Checks for Redirects, WAFs, and Error Text.
     """
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9',
     }
     try:
-        r = requests.get(url, headers=headers, timeout=5)
+        # We allow redirects to track them
+        r = requests.get(url, headers=headers, timeout=5, allow_redirects=True)
         
         # 1. Standard 404 Check
         if r.status_code == 404:
             return False
             
-        # 2. "Soft 404" Check (Content Fingerprinting)
-        # We check lower() vs lower() for case-insensitive matching
+        # 2. WAF / Captcha / Login Page Check (CRITICAL FIX)
+        # If the page asks for "Login" or "Verify", it's not a public profile.
+        # We treat this as False to avoid False Positives.
+        block_triggers = [
+            "captcha", "verify you are human", "cloudflare", 
+            "access denied", "sign up", "log in", "login"
+        ]
+        for trigger in block_triggers:
+            if trigger in r.text.lower():
+                # Special case: Some sites have "Login" in the header, ignore those.
+                # But for a profile page, a big "Login" prompt usually means restricted/missing.
+                # For safety, if we see 'captcha' or 'cloudflare', strictly return False.
+                if trigger in ["captcha", "verify you are human", "cloudflare"]:
+                    return False
+
+        # 3. Soft 404 (Error Text from sites.json)
         if error_text and error_text.lower() in r.text.lower():
             return False
             
-        # 3. Blocked Check
-        if r.status_code in [403, 429]:
-            return False
-
+        # 4. Redirect Check (The "Home Page" Trap)
+        # If we requested ".../username" but got sent to "twitch.tv/" (shorter URL), 
+        # it means the user doesn't exist.
+        if len(r.history) > 0:
+            if len(r.url) < len(url) - 2: # If final URL is significantly shorter
+                return False
+                
         return True
     except:
         return False
