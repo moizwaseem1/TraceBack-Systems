@@ -144,6 +144,8 @@ def scan_username():
             
     return jsonify(found_accounts)
 
+# --- BREACH RADAR LOGIC ---
+
 @app.route('/scan-breach', methods=['POST'])
 def scan_breach():
     data = request.json
@@ -154,16 +156,19 @@ def scan_breach():
 
     breach_db = get_live_breach_data()
     
+    # 1. LOAD THE MASTER LIST (radar_sites.json)
+    # This list has EVERYTHING: Socials, Legacy, and Tech.
     try:
-        with open('sites.json', 'r') as f:
-            site_data = json.load(f)
+        with open('radar_sites.json', 'r') as f:
+            radar_data = json.load(f)
     except:
+        # Safety Fallback
         return jsonify([]), 500
 
     target_sites = []
     
-    # Filter sites that are in the Breach DB
-    for site in site_data['sites']:
+    # 2. FILTER: Only check sites that are actually in the HIBP Breach Database
+    for site in radar_data['sites']:
         site_name = site['name'].lower()
         if site_name in breach_db:
             site['breach_details'] = breach_db[site_name]
@@ -171,18 +176,23 @@ def scan_breach():
 
     results = []
     
+    # 3. VERIFY: Scan each site to see if the user exists
+    # We use ThreadPoolExecutor to make it fast (scanning 50+ sites takes time)
+    # But since Vercel is strict with threads, we'll keep it simple loop for stability 
+    # unless you want me to add threading code.
+    
     for site in target_sites:
         url = site['url'].replace('{}', username)
         error_msg = site.get('error_msg')
 
-        # Correctly calling the function with 2 arguments
+        # Use the STRICT check_site_status function
         if check_site_status(url, error_msg):
             results.append({
                 "site": site['name'],
                 "status": "VULNERABLE",
                 "breach_date": site['breach_details']['date'],
                 "risk": "HIGH",
-                "description": "Account exists on breached platform."
+                "description": f"Account verified on {site['name']} (Breached in {site['breach_details']['date']})"
             })
 
     return jsonify(results)
