@@ -7,6 +7,7 @@
     { "name": "Vimeo", "url": "https://vimeo.com/{}", "error_msg": "recaptcha" },
     { "name": "DailyMotion", "url": "https://www.dailymotion.com/{}", "error_msg": "404" },
     { "name": "Wattpad", "url": "https://www.wattpad.com/user/{}", "error_msg": "User not found" },
+    { "name": "Last.fm", "url": "https://www.last.fm/user/{}", "error_msg": "Sorry, we couldn't find that user" },
     { "name": "Disqus", "url": "https://disqus.com/by/{}", "error_msg": "404" },
     { "name": "About.me", "url": "https://about.me/{}", "error_msg": "404" },
     { "name": "Gravatar", "url": "http://en.gravatar.com/{}", "error_msg": "couldn't find that page" },
