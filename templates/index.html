@@ -1,168 +1,214 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<style>
-    /* HERO SECTION */
-    .hero {
-        text-align: center;
-        padding: 80px 20px 60px;
-        position: relative;
-    }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-    .hero h1 {
-        font-size: 3.5rem;
-        margin-bottom: 20px;
-        line-height: 1.1;
-        letter-spacing: -2px;
-    }
-
-    .hero p {
-        font-size: 1.2rem;
-        color: #888;
-        max-width: 700px;
-        margin: 0 auto 40px;
-    }
-
-    /* ACTION BUTTONS CONTAINER */
-    .cta-container {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .btn-hero {
-        padding: 18px 40px;
-        font-size: 1rem;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: 0.3s;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .btn-primary {
-        background: var(--neon);
-        color: #000;
-        box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-    }
-    .btn-primary:hover {
-        background: #fff;
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-    }
-
-    .btn-secondary {
-        border: 1px solid #333;
-        color: #fff;
-        background: rgba(20, 20, 20, 0.8);
-    }
-    .btn-secondary:hover {
-        border-color: #ff3333;
-        color: #ff3333;
-    }
-
-    /* FEATURE GRID */
-    .landing-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-        margin-top: 80px;
-        padding: 0 20px;
-    }
-
-    .feature-box {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid #222;
-        padding: 30px;
-        border-radius: 8px;
-        transition: 0.3s;
-    }
-    .feature-box:hover {
-        transform: translateY(-5px);
-        border-color: #444;
-    }
-
-    .icon-box {
-        font-size: 2rem;
-        margin-bottom: 20px;
-        color: var(--neon);
-    }
-</style>
-
-<div class="fade-in">
-    
-    <section class="hero">
-        <span class="badge" style="margin-bottom: 20px; display: inline-block;">SYSTEM ONLINE</span>
-        <h1 class="glitched-text">DIGITAL SHADOW <br><span class="highlight">REVEALED.</span></h1>
-        
-        <p>
-            The advanced Open Source Intelligence (OSINT) engine. 
-            Map usernames across 40+ networks and detect database breaches in seconds.
-        </p>
-
-        <div class="cta-container">
-            <a href="/scanner" class="btn-hero btn-primary">
-                <i class="fas fa-search"></i> LAUNCH SCANNER
-            </a>
-            <a href="/radar" class="btn-hero btn-secondary">
-                <i class="fas fa-radiation"></i> CHECK BREACHES
-            </a>
-        </div>
-    </section>
-
-    <div style="max-width: 700px; margin: 0 auto; background: #000; border: 1px solid #333; padding: 20px; border-radius: 6px; font-family: monospace; color: #ccc; font-size: 0.9rem; text-align: left;">
-        <div style="margin-bottom: 10px;">
-            <span style="color: var(--neon);">root@traceback:~#</span> ./init_protocol.sh
-        </div>
-        <div id="typewriter" style="color: #888;"></div>
-    </div>
-
-    <div class="landing-grid">
-        
-        <div class="feature-box">
-            <div class="icon-box"><i class="fas fa-fingerprint"></i></div>
-            <h3 style="color: #fff;">Username Recon</h3>
-            <p style="color: #888; line-height: 1.6;">
-                Instantly check username availability across social media, coding platforms, and hidden forums. Finding the profile is the first step.
-            </p>
-        </div>
-
-        <div class="feature-box">
-            <div class="icon-box" style="color: #ff3333;"><i class="fas fa-user-shield"></i></div>
-            <h3 style="color: #fff;">Breach Intelligence</h3>
-            <p style="color: #888; line-height: 1.6;">
-                Our new <strong>Radar</strong> module cross-references identities against 600+ compromised databases (Adobe, LinkedIn, etc.) to assess risk.
-            </p>
-        </div>
-
-        <div class="feature-box">
-            <div class="icon-box" style="color: #00bbff;"><i class="fas fa-network-wired"></i></div>
-            <div class="tool-title">API Access</div>
-            <p style="color: #888; line-height: 1.6;">
-                Developers can integrate our scanning engine directly into their own applications using our high-speed JSON API.
-            </p>
-        </div>
-
-    </div>
-
-</div>
-
-<script>
-    // Simple Typewriter Effect for the "Fake Terminal"
-    const text = ">> Loading modules...\n>> Connecting to global nodes...\n>> SYSTEM READY. WAITING FOR INPUT...";
-    let i = 0;
-    const speed = 50; 
-
-    function typeWriter() {
-        if (i < text.length) {
-            document.getElementById("typewriter").innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
-            i++;
-            setTimeout(typeWriter, speed);
+        :root {
+            --tb-green: #00ff41;
+            --tb-dark: #050505;
+            --tb-text: #e0e0e0;
         }
-    }
-    
-    // Start typing when page loads
-    window.onload = typeWriter;
-</script>
+
+        body {
+            background-color: var(--tb-dark);
+            color: var(--tb-text);
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.1) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        nav {
+            padding: 20px 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,255,65,0.2);
+            background: rgba(5,5,5,0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: #fff;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-shield {
+            color: var(--tb-green);
+            text-shadow: 0 0 10px rgba(0,255,65,0.5);
+        }
+
+        /* Hero Section */
+        header {
+            padding: 100px 5vw;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin: 0;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+
+        h1 span {
+            color: var(--tb-green);
+            text-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+        }
+
+        .hero-sub {
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            color: #888;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Systems Grid */
+        .systems-container {
+            padding: 20px 5vw 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .system-card {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--tb-green);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .system-card:hover {
+            transform: translateY(-5px);
+            border-color: #444;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .system-card:hover::before { transform: scaleX(1); }
+
+        .sys-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .system-card h3 {
+            color: #fff;
+            margin: 0 0 10px 0;
+            font-size: 1.4rem;
+        }
+
+        .system-card p {
+            color: #aaa;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: transparent;
+            color: var(--tb-green);
+            border: 1px solid var(--tb-green);
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover, .btn:active {
+            background: var(--tb-green);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0,255,65,0.4);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.7rem;
+            padding: 4px 8px;
+            background: rgba(0,255,65,0.1);
+            color: var(--tb-green);
+            border: 1px solid var(--tb-green);
+            border-radius: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid #222;
+            color: #555;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><span class="logo-shield">🛡️</span> TraceBack_</div>
+        <div style="color: #666; font-size: 0.85rem;">v2.0.4 // SECURE</div>
+    </nav>
+
+    <header>
+        <h1>Defend The <span>Network.</span></h1>
+        <p class="hero-sub">Advanced Open-Source Intelligence (OSINT) and Cybersecurity protocols. We build tools to track, analyze, and secure digital footprints across the web.</p>
+    </header>
+
+    <div class="systems-container">
+        
+        <div class="system-card">
+            <span class="status-badge">LIVE SYSTEM</span>
+            <div class="sys-icon">🛰️</div>
+            <h3>Geo-Nexus Extractor</h3>
+            <p>A zero-upload, client-side metadata extraction protocol. Pull exact GPS coordinates, hardware signatures, and generate automated satellite investigation links instantly.</p>
+            <a href="geo_nexus.html" class="btn">Launch Terminal</a>
+        </div>
+
+        <div class="system-card">
+            <span class="status-badge">LIVE SYSTEM</span>
+            <div class="sys-icon">🎯</div>
+            <h3>Footprint Scanner</h3>
+            <p>Rapidly map target usernames across 40+ distinct platforms, forums, and social networks to establish an immediate digital footprint.</p>
+            <a href="scanner.html" class="btn">Launch Scanner</a>
+        </div>
+        
+        <div class="system-card">
+            <span class="status-badge">LIVE SYSTEM</span>
+            <div class="sys-icon">🛡️</div>
+            <h3>Breach Radar</h3>
+            <p>Deep-web correlation engine. Cross-reference target data against known data breaches and active deep web credential dumps.</p>
+            <a href="radar.html" class="btn">Launch Radar</a>
+        </div>
+
+    </div>
 {% endblock %}
