@@ -6,163 +6,211 @@
     <title>TraceBack Geo Nexus | Auto Extractor</title>
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
         :root {
             --tb-green: #00ff41;
-            --tb-dark: #0d0d0d;
-            --tb-panel: #1a1a1a;
+            --tb-green-glow: rgba(0, 255, 65, 0.4);
+            --tb-dark: #050505;
+            --tb-panel: rgba(20, 20, 20, 0.85);
             --tb-text: #e0e0e0;
+            --border-radius: 12px;
         }
 
         body {
             background-color: var(--tb-dark);
+            /* Cyber Grid Background */
+            background-image: 
+                linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
             color: var(--tb-text);
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Share Tech Mono', monospace;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 50px;
+            padding: 5vw;
             margin: 0;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
 
         h1 {
-            color: var(--tb-green);
-            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-            margin-bottom: 10px;
+            color: #fff;
+            text-shadow: 0 0 15px var(--tb-green-glow);
+            margin-bottom: 5px;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            text-align: center;
+            letter-spacing: 2px;
         }
 
         .subtitle {
-            color: #888;
-            margin-bottom: 40px;
-            font-size: 0.9em;
+            color: var(--tb-green);
+            margin-bottom: 30px;
+            font-size: clamp(0.8rem, 3vw, 1rem);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
         }
 
-        /* The Drag and Drop Zone */
+        /* Glassmorphism Drop Zone */
         #drop-zone {
             width: 100%;
             max-width: 600px;
-            height: 200px;
-            border: 2px dashed #444;
-            border-radius: 10px;
-            background-color: var(--tb-panel);
+            height: 220px;
+            border: 2px dashed #333;
+            border-radius: var(--border-radius);
+            background: var(--tb-panel);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        #drop-zone.dragover {
+        #drop-zone:active, #drop-zone.dragover {
             border-color: var(--tb-green);
             background-color: rgba(0, 255, 65, 0.05);
-            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            box-shadow: 0 0 25px var(--tb-green-glow);
+            transform: scale(0.98);
+        }
+
+        #drop-zone svg {
+            fill: var(--tb-green);
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 8px var(--tb-green-glow));
         }
 
         #drop-zone p {
-            margin: 10px 0;
-            color: #aaa;
+            margin: 5px 0;
+            color: #ccc;
+            font-size: 1.1em;
         }
 
-        #file-input {
-            display: none;
-        }
+        #file-input { display: none; }
 
-        /* The Results Terminal */
+        /* Animated Results Panel */
         #results-panel {
             width: 100%;
             max-width: 600px;
             margin-top: 30px;
-            background-color: var(--tb-panel);
-            border-left: 4px solid var(--tb-green);
-            padding: 20px;
-            display: none; /* Hidden until a file is dropped */
+            background: var(--tb-panel);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid #222;
+            border-top: 4px solid var(--tb-green);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-sizing: border-box;
+            display: none;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease-out forwards;
         }
 
-        .result-item {
-            margin-bottom: 15px;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #results-panel h3 {
+            margin-top: 0;
+            color: #fff;
             border-bottom: 1px solid #333;
             padding-bottom: 10px;
         }
 
+        .result-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(0,0,0,0.4);
+            border-radius: 6px;
+            border-left: 3px solid #444;
+            transition: border-color 0.3s;
+        }
+
+        .result-item:hover { border-left-color: var(--tb-green); }
+
         .result-label {
-            color: var(--tb-green);
-            font-weight: bold;
+            color: #888;
+            font-size: 0.85em;
+            text-transform: uppercase;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
         }
 
         .result-value {
             color: #fff;
             word-wrap: break-word;
+            font-size: 1.1em;
         }
 
-        .warning {
-            color: #ff4444;
-            font-style: italic;
-        }
+        .warning { color: #ff3333; }
 
-        /* Phase 3 Wizard Styles */
+        /* Phase 3 Wizard UI */
         #zero-data-wizard {
             display: none; 
-            margin-top: 20px; 
-            border-top: 2px dashed #ff4444; 
-            padding-top: 15px;
-            width: 100%;
+            margin-top: 25px; 
+            border: 1px solid #ff3333; 
+            background: rgba(255, 51, 51, 0.05);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            animation: slideUp 0.4s ease-out forwards;
         }
 
         .wizard-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
         }
 
         .wizard-buttons button {
-            background-color: #222;
-            color: var(--tb-green);
-            border: 1px solid var(--tb-green);
-            padding: 10px 15px;
+            background-color: rgba(0,0,0,0.5);
+            color: #fff;
+            border: 1px solid #555;
+            padding: 12px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 6px;
             font-family: inherit;
-            font-weight: bold;
+            font-size: 0.9em;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .wizard-buttons button:hover {
+        .wizard-buttons button:hover, .wizard-buttons button:active {
             background-color: var(--tb-green);
             color: #000;
+            border-color: var(--tb-green);
+            box-shadow: 0 0 15px var(--tb-green-glow);
         }
 
-        #tool-recommendations {
-            margin-top: 15px;
-            padding: 15px;
-            background: #111;
-            border: 1px solid #333;
-            display: none;
-            border-radius: 5px;
-        }
-
+        /* Generated Links */
         .tool-link {
             display: block;
             color: #fff;
             text-decoration: none;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #1a1a1a;
+            margin-top: 10px;
+            padding: 12px 15px;
+            background: linear-gradient(90deg, rgba(0,255,65,0.1) 0%, rgba(0,0,0,0.4) 100%);
             border-left: 3px solid var(--tb-green);
-            border-radius: 0 4px 4px 0;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
 
-        .tool-link:hover {
-            background: #2a2a2a;
-        }
-
-        .tool-desc {
-            color: #888;
-            font-size: 0.85em;
-            display: block;
-            margin-top: 4px;
+        .tool-link:hover, .tool-link:active {
+            background: rgba(0,255,65,0.15);
+            transform: translateX(5px);
         }
     </style>
 </head>
