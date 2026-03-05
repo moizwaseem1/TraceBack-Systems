@@ -290,6 +290,46 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.png', mimetype='image/vnd.microsoft.icon')
 
+from flask import Response
+
+# --- SEO & INDEXING PROTOCOLS ---
+
+@app.route('/sitemap.xml')
+def sitemap():
+    # This XML tells Google exactly which pages exist and how important they are
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://traceback.systems/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://traceback.systems/scanner</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://traceback.systems/radar</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://traceback.systems/geo_nexus</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>"""
+    return Response(xml, mimetype='text/xml')
+
+@app.route('/robots.txt')
+def robots():
+    # This tells Google bots they are allowed to crawl the site, and where the map is
+    text = """User-agent: *
+Allow: /
+
+Sitemap: https://traceback.systems/sitemap.xml"""
+    return Response(text, mimetype='text/plain')
 # ==========================================
 # MAIN EXECUTION
 # ==========================================
