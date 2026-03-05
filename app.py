@@ -220,7 +220,7 @@ def join_waitlist():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('coming_soon.html')
 
 @app.route('/scanner')
 def scanner_page():
