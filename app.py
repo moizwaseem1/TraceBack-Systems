@@ -253,6 +253,10 @@ def generate_geo_links():
 def home():
     return render_template('coming_soon.html')
 
+@app.route('/geo_nexus')
+def geo_nexus_page():
+    return render_template('geo_nexus.html')
+
 @app.route('/scanner')
 def scanner_page():
     return render_template('scanner.html')
