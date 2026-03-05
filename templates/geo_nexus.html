@@ -100,6 +100,70 @@
             color: #ff4444;
             font-style: italic;
         }
+
+        /* Phase 3 Wizard Styles */
+        #zero-data-wizard {
+            display: none; 
+            margin-top: 20px; 
+            border-top: 2px dashed #ff4444; 
+            padding-top: 15px;
+            width: 100%;
+        }
+
+        .wizard-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .wizard-buttons button {
+            background-color: #222;
+            color: var(--tb-green);
+            border: 1px solid var(--tb-green);
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: inherit;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .wizard-buttons button:hover {
+            background-color: var(--tb-green);
+            color: #000;
+        }
+
+        #tool-recommendations {
+            margin-top: 15px;
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            display: none;
+            border-radius: 5px;
+        }
+
+        .tool-link {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-left: 3px solid var(--tb-green);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .tool-link:hover {
+            background: #2a2a2a;
+        }
+
+        .tool-desc {
+            color: #888;
+            font-size: 0.85em;
+            display: block;
+            margin-top: 4px;
+        }
     </style>
 </head>
 <body>
@@ -135,6 +199,21 @@
         <div class="result-item">
             <span class="result-label">Software / Editing Tool:</span>
             <span class="result-value" id="res-software">Scanning...</span>
+        </div>
+
+        <div id="zero-data-wizard">
+        <h3 style="color: #ff4444; margin-top: 0;">[!] NO GPS DETECTED: INITIATING ZERO-DATA WIZARD</h3>
+        <p style="color: #aaa; font-size: 0.9em;">Image metadata has been stripped. Select visual or audio clues present in the file to launch manual OSINT workflows:</p>
+        
+        <div class="wizard-buttons">
+            <button onclick="showTools('wifi')">📶 Visible Wi-Fi Names</button>
+            <button onclick="showTools('cell')">📡 Cell Towers / Antennas</button>
+            <button onclick="showTools('audio')">🔊 Audio / Background Noise</button>
+            <button onclick="showTools('video')">🎥 Video / Sun Shadows</button>
+        </div>
+
+        <div id="tool-recommendations">
+            </div>
         </div>
     </div>
 
@@ -224,9 +303,10 @@
                     }
 
                 } else {
-                    resGps.innerHTML = "No GPS footprint detected (Image may be stripped or social-media sourced).";
-                    resGps.style.color = "#ff4444";
-                }
+            resGps.innerHTML = "No GPS footprint detected. Image metadata stripped.";
+            resGps.style.color = "#ff4444";
+            document.getElementById('zero-data-wizard').style.display = 'block'; // Show the wizard!
+        }
 
             } catch (error) {
                 console.error("Extraction failed:", error);
@@ -240,6 +320,52 @@
             resDevice.innerHTML = "Analyzing...";
             resTime.innerHTML = "Analyzing...";
             resSoftware.innerHTML = "Analyzing...";
+        }
+
+        // --- PHASE 3: ZERO-DATA WIZARD LOGIC ---
+        
+        // The ultimate OSINT database built from TraceBack's intel lists
+        const osintDatabases = {
+            wifi: [
+                { name: "WiGLE.net", url: "https://wigle.net/", desc: "Largest global Wi-Fi & BSSID geolocation database." },
+                { name: "WiFi Explorer", url: "https://www.intuitibits.com/products/wifi-explorer/", desc: "Wi-Fi signal analysis and mapping." },
+                { name: "inSSIDer", url: "https://www.metageek.com/products/inssider/", desc: "Identifies local Wi-Fi footprints and hardware." }
+            ],
+            cell: [
+                { name: "OpenCellID", url: "https://opencellid.org/", desc: "Global open-source cell tower database. Map towers visually." },
+                { name: "CellMapper", url: "https://www.cellmapper.net/", desc: "Maps real tower locations and signal coverage areas." },
+                { name: "Mozilla Location Service", url: "https://location.services.mozilla.com/", desc: "Open Wi-Fi and cell tower location aggregator." }
+            ],
+            audio: [
+                { name: "ACRCloud", url: "https://www.acrcloud.com/", desc: "Scene and environment sound matching." },
+                { name: "AudioMoth", url: "https://www.openacousticdevices.info/audiomoth", desc: "Wildlife & environment geo-recording analysis." },
+                { name: "Echoprint", url: "https://echoprint.me/", desc: "Advanced audio fingerprinting to track sound origins." }
+            ],
+            video: [
+                { name: "SunCalc", url: "https://www.suncalc.org/", desc: "Determines exact location and time using sun shadows." },
+                { name: "YouTube DataViewer", url: "https://citizenevidence.amnestyusa.org/", desc: "Extracts exact upload timestamps and thumbnails." },
+                { name: "GeoSpy", url: "https://geospy.web.app/", desc: "AI tool that matches elements in images/videos with world maps." },
+                { name: "Mapillary", url: "https://www.mapillary.com/", desc: "Crowdsourced geo-tagged street imagery for visual matching." }
+            ]
+        };
+
+        function showTools(category) {
+            const recPanel = document.getElementById('tool-recommendations');
+            const tools = osintDatabases[category];
+            
+            let html = `<h4 style="color: var(--tb-green); margin-top:0; margin-bottom: 10px;">Recommended OSINT Tools:</h4>`;
+            
+            tools.forEach(tool => {
+                html += `
+                    <a href="${tool.url}" target="_blank" class="tool-link">
+                        <strong>[↗] ${tool.name}</strong>
+                        <span class="tool-desc">${tool.desc}</span>
+                    </a>
+                `;
+            });
+
+            recPanel.innerHTML = html;
+            recPanel.style.display = 'block';
         }
     </script>
 </body>
