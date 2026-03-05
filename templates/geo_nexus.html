@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraceBack Geo-Nexus | Auto-Extractor</title>
+    <title>TraceBack Geo Nexus | Auto Extractor</title>
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
     <style>
         :root {
@@ -180,45 +180,52 @@
         });
 
         // Core Extraction Function
+        // Core Extraction Function
         async function processImage(file) {
             resultsPanel.style.display = 'block'; // Show terminal
             resetResults();
 
             try {
-                // 1. Extract GPS Data (exifr makes this incredibly easy)
+                // 1. Local Extraction (Saves Vercel bandwidth)
                 let gps = await exifr.gps(file);
-                
-                // 2. Extract General Metadata (Camera, Time, Software)
                 let exif = await exifr.parse(file);
 
-                // Populate GPS
+                // Populate Device Info, Time, and Software
+                resDevice.innerHTML = (exif && exif.Make && exif.Model) ? `${exif.Make} ${exif.Model}` : "No hardware signature found.";
+                resTime.innerHTML = (exif && exif.DateTimeOriginal) ? exif.DateTimeOriginal.toString() : "No creation timestamp found.";
+                resSoftware.innerHTML = (exif && exif.Software) ? exif.Software : "Original (No editing software signature detected).";
+
+                // Populate GPS and Trigger Python API
                 if (gps) {
                     resGps.innerHTML = `${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;
-                    resGps.style.color = "#00ff41"; // Safe Green
+                    resGps.style.color = "#00ff41";
+                    
+                    // --- PHASE 2: CALL THE PYTHON BACKEND ---
+                    // Send the coordinates to app.py to generate OSINT links
+                    const response = await fetch('/generate-geo-links', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ lat: gps.latitude, lon: gps.longitude })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if(data.status === "SUCCESS") {
+                        // Create a new section for the OSINT tools
+                        let toolsHTML = `<div style="margin-top: 20px; border-top: 1px dashed #444; padding-top: 15px;">`;
+                        toolsHTML += `<span class="result-label">Launch OSINT Investigation:</span>`;
+                        
+                        data.tools.forEach(tool => {
+                            toolsHTML += `<a href="${tool.url}" target="_blank" style="display:block; color:#00ff41; text-decoration:none; margin-top:8px; padding: 5px; background: #222; border-radius: 4px;">[↗] ${tool.name}</a>`;
+                        });
+                        
+                        toolsHTML += `</div>`;
+                        resGps.innerHTML += toolsHTML; // Append tools below the coordinates
+                    }
+
                 } else {
                     resGps.innerHTML = "No GPS footprint detected (Image may be stripped or social-media sourced).";
-                    resGps.style.color = "#ff4444"; // Warning Red
-                }
-
-                // Populate Device Info
-                if (exif && exif.Make && exif.Model) {
-                    resDevice.innerHTML = `${exif.Make} ${exif.Model}`;
-                } else {
-                    resDevice.innerHTML = "No hardware signature found.";
-                }
-
-                // Populate Time
-                if (exif && exif.DateTimeOriginal) {
-                    resTime.innerHTML = exif.DateTimeOriginal.toString();
-                } else {
-                    resTime.innerHTML = "No creation timestamp found.";
-                }
-
-                // Populate Software (Reveals if Photoshop or other tools were used)
-                if (exif && exif.Software) {
-                    resSoftware.innerHTML = exif.Software;
-                } else {
-                    resSoftware.innerHTML = "Original (No editing software signature detected).";
+                    resGps.style.color = "#ff4444";
                 }
 
             } catch (error) {
