@@ -251,7 +251,7 @@ def generate_geo_links():
 
 @app.route('/')
 def home():
-    return render_template('coming_soon.html')
+    return render_template('index.html')
 
 @app.route('/geo_nexus')
 def geo_nexus_page():
