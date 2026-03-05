@@ -1,398 +1,360 @@
 {% extends "layout.html" %}
 
+{% block title %}TraceBack Systems | Digital Intelligence Hub{% endblock %}
+
 {% block content %}
-    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+    :root {
+        --tb-green: #00ff41;
+        --tb-green-glow: rgba(0, 255, 65, 0.6);
+        --tb-dark: #030303;
+        --tb-glass: rgba(10, 10, 10, 0.7);
+        --border-radius: 16px;
+    }
 
-        :root {
-            --tb-green: #00ff41;
-            --tb-green-glow: rgba(0, 255, 65, 0.4);
-            --tb-panel: rgba(20, 20, 20, 0.85);
-            --border-radius: 12px;
-        }
+    /* Moving Cyber-Grid Background */
+    .hero-wrapper {
+        position: relative;
+        width: 100%;
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        background-color: var(--tb-dark);
+        background-image: 
+            linear-gradient(rgba(0, 255, 65, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 65, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px;
+        background-position: center center;
+        animation: gridMove 20s linear infinite;
+        font-family: 'Share Tech Mono', monospace;
+    }
 
-        /* FIX: We use a wrapper instead of 'body' to protect layout.html */
-        .geo-wrapper {
-            font-family: 'Share Tech Mono', monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px 5vw;
-            min-height: 80vh;
-            box-sizing: border-box;
-            /* Cyber Grid Background confined to the tool area */
-            background-image: 
-                linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-        }
+    @keyframes gridMove {
+        0% { background-position: 0 0; }
+        100% { background-position: 40px 40px; }
+    }
 
-        .geo-wrapper h1 {
-            color: #fff;
-            text-shadow: 0 0 15px var(--tb-green-glow);
-            margin-bottom: 5px;
-            font-size: clamp(1.8rem, 5vw, 2.5rem);
-            text-align: center;
-            letter-spacing: 2px;
-            margin-top: 0;
-        }
+    /* Core Hero Section */
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        padding: 100px 5vw 40px;
+        max-width: 900px;
+    }
 
-        .subtitle {
-            color: var(--tb-green);
-            margin-bottom: 30px;
-            font-size: clamp(0.8rem, 3vw, 1rem);
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.8;
-        }
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(0, 255, 65, 0.1);
+        border: 1px solid var(--tb-green);
+        border-radius: 50px;
+        color: var(--tb-green);
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 30px;
+        box-shadow: 0 0 15px rgba(0,255,65,0.2);
+    }
 
-        /* Glassmorphism Drop Zone */
-        #drop-zone {
-            width: 100%;
-            max-width: 600px;
-            height: 220px;
-            border: 2px dashed #333;
-            border-radius: var(--border-radius);
-            background: var(--tb-panel);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--tb-green);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--tb-green);
+        animation: pulse 1.5s infinite;
+    }
 
-        #drop-zone:active, #drop-zone.dragover {
-            border-color: var(--tb-green);
-            background-color: rgba(0, 255, 65, 0.05);
-            box-shadow: 0 0 25px var(--tb-green-glow);
-            transform: scale(0.98);
-        }
+    @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 65, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 65, 0); }
+    }
 
-        #drop-zone svg {
-            fill: var(--tb-green);
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 0 8px var(--tb-green-glow));
-        }
+    .hero-content h1 {
+        font-family: 'Orbitron', sans-serif;
+        font-size: clamp(3rem, 8vw, 5.5rem);
+        font-weight: 900;
+        margin: 0;
+        color: #ffffff;
+        line-height: 1.1;
+        letter-spacing: -2px;
+        text-transform: uppercase;
+    }
 
-        #drop-zone p {
-            margin: 5px 0;
-            color: #ccc;
-            font-size: 1.1em;
-        }
+    .hero-content h1 span {
+        color: var(--tb-green);
+        text-shadow: 0 0 30px var(--tb-green-glow);
+        position: relative;
+    }
 
-        #file-input { display: none; }
+    .typewriter-text {
+        font-size: clamp(1rem, 3vw, 1.3rem);
+        color: #a0a0a0;
+        margin-top: 25px;
+        min-height: 60px; /* Prevents layout shift */
+    }
 
-        /* Animated Results Panel */
-        #results-panel {
-            width: 100%;
-            max-width: 600px;
-            margin-top: 30px;
-            background: var(--tb-panel);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid #222;
-            border-top: 4px solid var(--tb-green);
-            border-radius: var(--border-radius);
-            padding: 25px;
-            box-sizing: border-box;
-            display: none;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            animation: slideUp 0.4s ease-out forwards;
-        }
+    /* The Intelligence Ticker */
+    .intel-ticker {
+        width: 100%;
+        background: #000;
+        border-top: 1px solid #222;
+        border-bottom: 1px solid #222;
+        padding: 10px 0;
+        overflow: hidden;
+        white-space: nowrap;
+        position: relative;
+        z-index: 2;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.8);
+    }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .ticker-content {
+        display: inline-block;
+        padding-left: 100%;
+        animation: ticker 25s linear infinite;
+        color: var(--tb-green);
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+    }
 
-        #results-panel h3 {
-            margin-top: 0;
-            color: #fff;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
+    @keyframes ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-100%); }
+    }
 
-        .result-item {
-            margin-bottom: 15px;
-            padding: 12px;
-            background: rgba(0,0,0,0.4);
-            border-radius: 6px;
-            border-left: 3px solid #444;
-            transition: border-color 0.3s;
-        }
+    /* Elite Holographic Cards */
+    .systems-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 40px;
+        padding: 60px 5vw 100px;
+        max-width: 1400px;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-        .result-item:hover { border-left-color: var(--tb-green); }
+    .tool-card {
+        background: var(--tb-glass);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(0, 255, 65, 0.2);
+        border-radius: var(--border-radius);
+        padding: 40px 30px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        display: flex;
+        flex-direction: column;
+    }
 
-        .result-label {
-            color: #888;
-            font-size: 0.85em;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-        }
+    /* The Holographic Scanner Line Effect */
+    .tool-card::after {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: linear-gradient(to bottom, rgba(0,255,65,0) 0%, rgba(0,255,65,0.05) 50%, rgba(0,255,65,0) 100%);
+        transform: rotate(45deg) translateY(-100%);
+        transition: transform 0.6s ease-in-out;
+        pointer-events: none;
+    }
 
-        .result-value {
-            color: #fff;
-            word-wrap: break-word;
-            font-size: 1.1em;
-        }
+    .tool-card:hover::after {
+        transform: rotate(45deg) translateY(100%);
+    }
 
-        .warning { color: #ff3333; }
+    .tool-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--tb-green);
+        box-shadow: 0 20px 50px rgba(0, 255, 65, 0.15);
+    }
 
-        /* Phase 3 Wizard UI */
-        #zero-data-wizard {
-            display: none; 
-            margin-top: 25px; 
-            border: 1px solid #ff3333; 
-            background: rgba(255, 51, 51, 0.05);
-            border-radius: var(--border-radius);
-            padding: 20px;
-            animation: slideUp 0.4s ease-out forwards;
-        }
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 25px;
+    }
 
-        .wizard-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 12px;
-            margin-top: 20px;
-        }
+    .sys-icon-box {
+        width: 60px;
+        height: 60px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid #333;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+        transition: all 0.3s;
+    }
 
-        .wizard-buttons button {
-            background-color: rgba(0,0,0,0.5);
-            color: #fff;
-            border: 1px solid #555;
-            padding: 12px;
-            cursor: pointer;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.9em;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+    .tool-card:hover .sys-icon-box {
+        border-color: var(--tb-green);
+        box-shadow: 0 0 20px rgba(0,255,65,0.2), inset 0 0 15px rgba(0,255,65,0.1);
+    }
 
-        .wizard-buttons button:hover, .wizard-buttons button:active {
-            background-color: var(--tb-green);
-            color: #000;
-            border-color: var(--tb-green);
-            box-shadow: 0 0 15px var(--tb-green-glow);
-        }
+    .live-badge {
+        background: rgba(0,255,65,0.1);
+        color: var(--tb-green);
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        border: 1px solid var(--tb-green);
+        letter-spacing: 1px;
+    }
 
-        /* Generated Links */
-        .tool-link {
-            display: block;
-            color: #fff;
-            text-decoration: none;
-            margin-top: 10px;
-            padding: 12px 15px;
-            background: linear-gradient(90deg, rgba(0,255,65,0.1) 0%, rgba(0,0,0,0.4) 100%);
-            border-left: 3px solid var(--tb-green);
-            border-radius: 4px;
-            transition: all 0.2s;
-        }
+    .tool-card h3 {
+        font-family: 'Orbitron', sans-serif;
+        color: #fff;
+        font-size: 1.6rem;
+        margin: 0 0 15px 0;
+        letter-spacing: 1px;
+    }
 
-        .tool-link:hover, .tool-link:active {
-            background: rgba(0,255,65,0.15);
-            transform: translateX(5px);
-        }
-    </style>
+    .tool-card p {
+        color: #999;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        flex-grow: 1;
+    }
 
-    <div class="geo-wrapper">
-        <h1>TRACEBACK GEO-NEXUS</h1>
-        <div class="subtitle">Secure Local Metadata Extraction Protocol (Zero-Upload)</div>
+    .btn-launch {
+        display: block;
+        width: 100%;
+        padding: 15px 0;
+        text-align: center;
+        background: #0a0a0a;
+        color: var(--tb-green);
+        border: 1px solid #333;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
 
-        <div id="drop-zone">
-            <svg width="50" height="50" fill="#444" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            <p>Drag & Drop Target Image Here</p>
-            <p style="font-size: 0.8em; color: #666;">or click to browse local files</p>
-            <input type="file" id="file-input" accept="image/jpeg, image/png, image/tiff">
+    .btn-launch:hover {
+        background: var(--tb-green);
+        color: #000;
+        border-color: var(--tb-green);
+        box-shadow: 0 0 20px var(--tb-green-glow);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-content { padding: 60px 5vw 30px; }
+        .systems-grid { padding: 40px 5vw 80px; gap: 25px; }
+        .tool-card { padding: 30px 20px; }
+    }
+</style>
+
+<div class="hero-wrapper">
+    
+    <div class="hero-content">
+        <div class="status-pill">
+            <div class="pulse-dot"></div>
+            ALL SYSTEMS OPERATIONAL
         </div>
+        
+        <h1>DEFEND THE<br><span>NETWORK.</span></h1>
+        
+        <div class="typewriter-text" id="typewriter"></div>
+    </div>
 
-        <div id="results-panel">
-            <h3>[+] EXTRACTION LOG</h3>
-            
-            <div class="result-item">
-                <span class="result-label">GPS Coordinates:</span>
-                <span class="result-value" id="res-gps">Scanning...</span>
-            </div>
-
-            <div class="result-item">
-                <span class="result-label">Device Signature:</span>
-                <span class="result-value" id="res-device">Scanning...</span>
-            </div>
-
-            <div class="result-item">
-                <span class="result-label">Timestamp:</span>
-                <span class="result-value" id="res-time">Scanning...</span>
-            </div>
-
-            <div class="result-item">
-                <span class="result-label">Software / Editing Tool:</span>
-                <span class="result-value" id="res-software">Scanning...</span>
-            </div>
-
-            <div id="zero-data-wizard">
-                <h3 style="color: #ff4444; margin-top: 0;">[!] NO GPS DETECTED: INITIATING ZERO-DATA WIZARD</h3>
-                <p style="color: #aaa; font-size: 0.9em;">Image metadata has been stripped. Select visual or audio clues present in the file to launch manual OSINT workflows:</p>
-                
-                <div class="wizard-buttons">
-                    <button onclick="showTools('wifi')">📶 Visible Wi-Fi Names</button>
-                    <button onclick="showTools('cell')">📡 Cell Towers / Antennas</button>
-                    <button onclick="showTools('audio')">🔊 Audio / Background Noise</button>
-                    <button onclick="showTools('video')">🎥 Video / Sun Shadows</button>
-                </div>
-
-                <div id="tool-recommendations"></div>
-            </div>
+    <div class="intel-ticker">
+        <div class="ticker-content">
+            [+] SCANNING VERIFIED NODES... [+] CORRELATING DEEP WEB BREACHES... [+] EXTRACTING SATELLITE TELEMETRY... [+] ANALYZING DIGITAL FOOTPRINTS... [+] TRACEBACK SYSTEMS V2.0 ACTIVE... [+] SECURING SOVEREIGN DATA...
         </div>
     </div>
 
-    <script>
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file-input');
-        const resultsPanel = document.getElementById('results-panel');
+    <div class="systems-grid">
+        
+        <div class="tool-card">
+            <div class="card-header">
+                <div class="sys-icon-box">🎯</div>
+                <div class="live-badge">SYSTEM 01</div>
+            </div>
+            <h3>Footprint Scanner</h3>
+            <p>Rapidly map target usernames across 40+ distinct platforms, forums, and social networks to establish an immediate digital footprint.</p>
+            <a href="{{ url_for('scanner') }}" class="btn-launch">Initialize Node Scan</a>
+        </div>
 
-        const resGps = document.getElementById('res-gps');
-        const resDevice = document.getElementById('res-device');
-        const resTime = document.getElementById('res-time');
-        const resSoftware = document.getElementById('res-software');
+        <div class="tool-card">
+            <div class="card-header">
+                <div class="sys-icon-box">🛡️</div>
+                <div class="live-badge">SYSTEM 02</div>
+            </div>
+            <h3>Breach Radar</h3>
+            <p>Deep-web correlation engine. Cross-reference target data against 650+ known data breaches and active deep web credential dumps.</p>
+            <a href="{{ url_for('radar') }}" class="btn-launch">Initialize Radar</a>
+        </div>
 
-        dropZone.addEventListener('click', () => fileInput.click());
+        <div class="tool-card">
+            <div class="card-header">
+                <div class="sys-icon-box">🛰️</div>
+                <div class="live-badge">SYSTEM 03</div>
+            </div>
+            <h3>Geo-Nexus Extractor</h3>
+            <p>Zero-upload client-side metadata extraction protocol. Pull exact GPS coordinates, hardware signatures, and generate automated satellite links.</p>
+            <a href="{{ url_for('geo_nexus') }}" class="btn-launch">Initialize Terminal</a>
+        </div>
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
+    </div>
+</div>
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
+<script>
+    const textArray = ["Advanced Open-Source Intelligence (OSINT).", "Zero-upload cryptographic security.", "We build tools to track, analyze, and secure.", "TraceBack: Democratizing digital intelligence."];
+    let textIndex = 0;
+    let charIndex = 0;
+    const typingDelay = 50;
+    const erasingDelay = 30;
+    const newTextDelay = 2000;
+    const typewriterElement = document.getElementById("typewriter");
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            
-            if (e.dataTransfer.files.length > 0) {
-                processImage(e.dataTransfer.files[0]);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                processImage(e.target.files[0]);
-            }
-        });
-
-        async function processImage(file) {
-            resultsPanel.style.display = 'block'; 
-            resetResults();
-
-            try {
-                let gps = await exifr.gps(file);
-                let exif = await exifr.parse(file);
-
-                resDevice.innerHTML = (exif && exif.Make && exif.Model) ? `${exif.Make} ${exif.Model}` : "No hardware signature found.";
-                resTime.innerHTML = (exif && exif.DateTimeOriginal) ? exif.DateTimeOriginal.toString() : "No creation timestamp found.";
-                resSoftware.innerHTML = (exif && exif.Software) ? exif.Software : "Original (No editing software signature detected).";
-
-                if (gps) {
-                    resGps.innerHTML = `${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;
-                    resGps.style.color = "#00ff41";
-                    
-                    const response = await fetch('/generate-geo-links', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ lat: gps.latitude, lon: gps.longitude })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if(data.status === "SUCCESS") {
-                        let toolsHTML = `<div style="margin-top: 20px; border-top: 1px dashed #444; padding-top: 15px;">`;
-                        toolsHTML += `<span class="result-label">Launch OSINT Investigation:</span>`;
-                        
-                        data.tools.forEach(tool => {
-                            toolsHTML += `<a href="${tool.url}" target="_blank" class="tool-link">[↗] ${tool.name}</a>`;
-                        });
-                        
-                        toolsHTML += `</div>`;
-                        resGps.innerHTML += toolsHTML; 
-                    }
-
-                } else {
-                    resGps.innerHTML = "No GPS footprint detected. Image metadata stripped.";
-                    resGps.style.color = "#ff4444";
-                    document.getElementById('zero-data-wizard').style.display = 'block'; 
-                }
-
-            } catch (error) {
-                console.error("Extraction failed:", error);
-                resGps.innerHTML = "<span class='warning'>ERROR: File format not supported or corrupted.</span>";
-            }
+    function type() {
+        if (charIndex < textArray[textIndex].length) {
+            typewriterElement.textContent += textArray[textIndex].charAt(charIndex);
+            charIndex++;
+            setTimeout(type, typingDelay);
+        } else {
+            setTimeout(erase, newTextDelay);
         }
+    }
 
-        function resetResults() {
-            resGps.innerHTML = "Analyzing binary data...";
-            resGps.style.color = "#fff";
-            resDevice.innerHTML = "Analyzing...";
-            resTime.innerHTML = "Analyzing...";
-            resSoftware.innerHTML = "Analyzing...";
-            document.getElementById('zero-data-wizard').style.display = 'none';
+    function erase() {
+        if (charIndex > 0) {
+            typewriterElement.textContent = textArray[textIndex].substring(0, charIndex - 1);
+            charIndex--;
+            setTimeout(erase, erasingDelay);
+        } else {
+            textIndex++;
+            if (textIndex >= textArray.length) textIndex = 0;
+            setTimeout(type, typingDelay + 500);
         }
+    }
 
-        const osintDatabases = {
-            wifi: [
-                { name: "WiGLE.net", url: "https://wigle.net/", desc: "Largest global Wi-Fi & BSSID geolocation database." },
-                { name: "WiFi Explorer", url: "https://www.intuitibits.com/products/wifi-explorer/", desc: "Wi-Fi signal analysis and mapping." },
-                { name: "inSSIDer", url: "https://www.metageek.com/products/inssider/", desc: "Identifies local Wi-Fi footprints and hardware." }
-            ],
-            cell: [
-                { name: "OpenCellID", url: "https://opencellid.org/", desc: "Global open-source cell tower database. Map towers visually." },
-                { name: "CellMapper", url: "https://www.cellmapper.net/", desc: "Maps real tower locations and signal coverage areas." },
-                { name: "Mozilla Location Service", url: "https://location.services.mozilla.com/", desc: "Open Wi-Fi and cell tower location aggregator." }
-            ],
-            audio: [
-                { name: "ACRCloud", url: "https://www.acrcloud.com/", desc: "Scene and environment sound matching." },
-                { name: "AudioMoth", url: "https://www.openacousticdevices.info/audiomoth", desc: "Wildlife & environment geo-recording analysis." },
-                { name: "Echoprint", url: "https://echoprint.me/", desc: "Advanced audio fingerprinting to track sound origins." }
-            ],
-            video: [
-                { name: "SunCalc", url: "https://www.suncalc.org/", desc: "Determines exact location and time using sun shadows." },
-                { name: "YouTube DataViewer", url: "https://citizenevidence.amnestyusa.org/", desc: "Extracts exact upload timestamps and thumbnails." },
-                { name: "GeoSpy", url: "https://geospy.web.app/", desc: "AI tool that matches elements in images/videos with world maps." },
-                { name: "Mapillary", url: "https://www.mapillary.com/", desc: "Crowdsourced geo-tagged street imagery for visual matching." }
-            ]
-        };
-
-        function showTools(category) {
-            const recPanel = document.getElementById('tool-recommendations');
-            const tools = osintDatabases[category];
-            
-            let html = `<h4 style="color: var(--tb-green); margin-top:0; margin-bottom: 10px;">Recommended OSINT Tools:</h4>`;
-            
-            tools.forEach(tool => {
-                html += `
-                    <a href="${tool.url}" target="_blank" class="tool-link" style="background: rgba(0,0,0,0.5);">
-                        <strong>[↗] ${tool.name}</strong>
-                        <span style="color:#888; font-size:0.85em; display:block; margin-top:4px;">${tool.desc}</span>
-                    </a>
-                `;
-            });
-
-            recPanel.innerHTML = html;
-            recPanel.style.display = 'block';
-        }
-    </script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if(textArray.length) setTimeout(type, newTextDelay + 250);
+    });
+</script>
 {% endblock %}
