@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceBack Geo-Nexus | Auto-Extractor</title>
+    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+    <style>
+        :root {
+            --tb-green: #00ff41;
+            --tb-dark: #0d0d0d;
+            --tb-panel: #1a1a1a;
+            --tb-text: #e0e0e0;
+        }
+
+        body {
+            background-color: var(--tb-dark);
+            color: var(--tb-text);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+            margin: 0;
+        }
+
+        h1 {
+            color: var(--tb-green);
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 0.9em;
+        }
+
+        /* The Drag and Drop Zone */
+        #drop-zone {
+            width: 100%;
+            max-width: 600px;
+            height: 200px;
+            border: 2px dashed #444;
+            border-radius: 10px;
+            background-color: var(--tb-panel);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #drop-zone.dragover {
+            border-color: var(--tb-green);
+            background-color: rgba(0, 255, 65, 0.05);
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+
+        #drop-zone p {
+            margin: 10px 0;
+            color: #aaa;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* The Results Terminal */
+        #results-panel {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 30px;
+            background-color: var(--tb-panel);
+            border-left: 4px solid var(--tb-green);
+            padding: 20px;
+            display: none; /* Hidden until a file is dropped */
+        }
+
+        .result-item {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .result-label {
+            color: var(--tb-green);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #fff;
+            word-wrap: break-word;
+        }
+
+        .warning {
+            color: #ff4444;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>TRACEBACK GEO-NEXUS</h1>
+    <div class="subtitle">Secure Local Metadata Extraction Protocol (Zero-Upload)</div>
+
+    <div id="drop-zone">
+        <svg width="50" height="50" fill="#444" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        <p>Drag & Drop Target Image Here</p>
+        <p style="font-size: 0.8em; color: #666;">or click to browse local files</p>
+        <input type="file" id="file-input" accept="image/jpeg, image/png, image/tiff">
+    </div>
+
+    <div id="results-panel">
+        <h3>[+] EXTRACTION LOG</h3>
+        
+        <div class="result-item">
+            <span class="result-label">GPS Coordinates:</span>
+            <span class="result-value" id="res-gps">Scanning...</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Device Signature:</span>
+            <span class="result-value" id="res-device">Scanning...</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Timestamp:</span>
+            <span class="result-value" id="res-time">Scanning...</span>
+        </div>
+
+        <div class="result-item">
+            <span class="result-label">Software / Editing Tool:</span>
+            <span class="result-value" id="res-software">Scanning...</span>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const resultsPanel = document.getElementById('results-panel');
+
+        // UI Elements for Data
+        const resGps = document.getElementById('res-gps');
+        const resDevice = document.getElementById('res-device');
+        const resTime = document.getElementById('res-time');
+        const resSoftware = document.getElementById('res-software');
+
+        // Click to upload
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop visual effects
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        // Handle file drop
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length > 0) {
+                processImage(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Handle file selection via click
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processImage(e.target.files[0]);
+            }
+        });
+
+        // Core Extraction Function
+        async function processImage(file) {
+            resultsPanel.style.display = 'block'; // Show terminal
+            resetResults();
+
+            try {
+                // 1. Extract GPS Data (exifr makes this incredibly easy)
+                let gps = await exifr.gps(file);
+                
+                // 2. Extract General Metadata (Camera, Time, Software)
+                let exif = await exifr.parse(file);
+
+                // Populate GPS
+                if (gps) {
+                    resGps.innerHTML = `${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;
+                    resGps.style.color = "#00ff41"; // Safe Green
+                } else {
+                    resGps.innerHTML = "No GPS footprint detected (Image may be stripped or social-media sourced).";
+                    resGps.style.color = "#ff4444"; // Warning Red
+                }
+
+                // Populate Device Info
+                if (exif && exif.Make && exif.Model) {
+                    resDevice.innerHTML = `${exif.Make} ${exif.Model}`;
+                } else {
+                    resDevice.innerHTML = "No hardware signature found.";
+                }
+
+                // Populate Time
+                if (exif && exif.DateTimeOriginal) {
+                    resTime.innerHTML = exif.DateTimeOriginal.toString();
+                } else {
+                    resTime.innerHTML = "No creation timestamp found.";
+                }
+
+                // Populate Software (Reveals if Photoshop or other tools were used)
+                if (exif && exif.Software) {
+                    resSoftware.innerHTML = exif.Software;
+                } else {
+                    resSoftware.innerHTML = "Original (No editing software signature detected).";
+                }
+
+            } catch (error) {
+                console.error("Extraction failed:", error);
+                resGps.innerHTML = "<span class='warning'>ERROR: File format not supported or corrupted.</span>";
+            }
+        }
+
+        function resetResults() {
+            resGps.innerHTML = "Analyzing binary data...";
+            resGps.style.color = "#fff";
+            resDevice.innerHTML = "Analyzing...";
+            resTime.innerHTML = "Analyzing...";
+            resSoftware.innerHTML = "Analyzing...";
+        }
+    </script>
+</body>
+</html>
