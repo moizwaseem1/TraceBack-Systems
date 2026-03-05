@@ -1,214 +1,155 @@
 {% extends "layout.html" %}
 
+{% block title %}TraceBack Systems | Hub{% endblock %}
+
 {% block content %}
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+<style>
+    /* Landing Page Specific Styles */
+    .hero-section {
+        padding: 80px 5vw;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-        :root {
-            --tb-green: #00ff41;
-            --tb-dark: #050505;
-            --tb-text: #e0e0e0;
-        }
+    .hero-section h1 {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        margin: 0;
+        color: #fff;
+        letter-spacing: -1px;
+    }
 
-        body {
-            background-color: var(--tb-dark);
-            color: var(--tb-text);
-            font-family: 'Share Tech Mono', monospace;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            background-image: radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.1) 0%, transparent 50%);
-        }
+    .hero-section h1 span {
+        color: #00ff41;
+        text-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+    }
 
-        /* Navigation */
-        nav {
-            padding: 20px 5vw;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(0,255,65,0.2);
-            background: rgba(5,5,5,0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    .hero-sub {
+        font-size: clamp(1rem, 4vw, 1.2rem);
+        color: #888;
+        margin-top: 20px;
+        margin-bottom: 40px;
+    }
 
-        .logo {
-            font-size: 1.5rem;
-            color: #fff;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    /* Systems Grid */
+    .systems-container {
+        padding: 20px 5vw 80px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
 
-        .logo-shield {
-            color: var(--tb-green);
-            text-shadow: 0 0 10px rgba(0,255,65,0.5);
-        }
+    .system-card {
+        background: rgba(20, 20, 20, 0.6);
+        border: 1px solid #222;
+        border-radius: 12px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
-        /* Hero Section */
-        header {
-            padding: 100px 5vw;
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+    .system-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 3px;
+        background: #00ff41;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+    }
 
-        h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            margin: 0;
-            color: #fff;
-            letter-spacing: -1px;
-        }
+    .system-card:hover {
+        transform: translateY(-5px);
+        border-color: #444;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
 
-        h1 span {
-            color: var(--tb-green);
-            text-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
-        }
+    .system-card:hover::before { transform: scaleX(1); }
 
-        .hero-sub {
-            font-size: clamp(1rem, 4vw, 1.2rem);
-            color: #888;
-            margin-top: 20px;
-            margin-bottom: 40px;
-        }
+    .sys-icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+    }
 
-        /* Systems Grid */
-        .systems-container {
-            padding: 20px 5vw 80px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    .system-card h3 {
+        color: #fff;
+        margin: 0 0 10px 0;
+        font-size: 1.4rem;
+    }
 
-        .system-card {
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 30px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+    .system-card p {
+        color: #aaa;
+        font-size: 0.95rem;
+        margin-bottom: 25px;
+    }
 
-        .system-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            background: var(--tb-green);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
+    .btn-tb {
+        display: inline-block;
+        padding: 12px 24px;
+        background: transparent;
+        color: #00ff41;
+        border: 1px solid #00ff41;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: all 0.2s;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+    }
 
-        .system-card:hover {
-            transform: translateY(-5px);
-            border-color: #444;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+    .btn-tb:hover, .btn-tb:active {
+        background: #00ff41;
+        color: #000;
+        box-shadow: 0 0 15px rgba(0,255,65,0.4);
+    }
 
-        .system-card:hover::before { transform: scaleX(1); }
+    .status-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 0.7rem;
+        padding: 4px 8px;
+        background: rgba(0,255,65,0.1);
+        color: #00ff41;
+        border: 1px solid #00ff41;
+        border-radius: 20px;
+    }
+</style>
 
-        .sys-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
+<div class="hero-section">
+    <h1>Defend The <span>Network.</span></h1>
+    <p class="hero-sub">Advanced Open-Source Intelligence (OSINT) and Cybersecurity protocols. We build tools to track, analyze, and secure digital footprints across the web.</p>
+</div>
 
-        .system-card h3 {
-            color: #fff;
-            margin: 0 0 10px 0;
-            font-size: 1.4rem;
-        }
-
-        .system-card p {
-            color: #aaa;
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: transparent;
-            color: var(--tb-green);
-            border: 1px solid var(--tb-green);
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-        }
-
-        .btn:hover, .btn:active {
-            background: var(--tb-green);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0,255,65,0.4);
-        }
-
-        .status-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            background: rgba(0,255,65,0.1);
-            color: var(--tb-green);
-            border: 1px solid var(--tb-green);
-            border-radius: 20px;
-        }
-
-        footer {
-            text-align: center;
-            padding: 40px;
-            border-top: 1px solid #222;
-            color: #555;
-            font-size: 0.9rem;
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <div class="logo"><span class="logo-shield">🛡️</span> TraceBack_</div>
-        <div style="color: #666; font-size: 0.85rem;">v2.0.4 // SECURE</div>
-    </nav>
-
-    <header>
-        <h1>Defend The <span>Network.</span></h1>
-        <p class="hero-sub">Advanced Open-Source Intelligence (OSINT) and Cybersecurity protocols. We build tools to track, analyze, and secure digital footprints across the web.</p>
-    </header>
-
-    <div class="systems-container">
-        
-        <div class="system-card">
-            <span class="status-badge">LIVE SYSTEM</span>
-            <div class="sys-icon">🛰️</div>
-            <h3>Geo-Nexus Extractor</h3>
-            <p>A zero-upload, client-side metadata extraction protocol. Pull exact GPS coordinates, hardware signatures, and generate automated satellite investigation links instantly.</p>
-            <a href="geo_nexus.html" class="btn">Launch Terminal</a>
-        </div>
-
-        <div class="system-card">
-            <span class="status-badge">LIVE SYSTEM</span>
-            <div class="sys-icon">🎯</div>
-            <h3>Footprint Scanner</h3>
-            <p>Rapidly map target usernames across 40+ distinct platforms, forums, and social networks to establish an immediate digital footprint.</p>
-            <a href="scanner.html" class="btn">Launch Scanner</a>
-        </div>
-        
-        <div class="system-card">
-            <span class="status-badge">LIVE SYSTEM</span>
-            <div class="sys-icon">🛡️</div>
-            <h3>Breach Radar</h3>
-            <p>Deep-web correlation engine. Cross-reference target data against known data breaches and active deep web credential dumps.</p>
-            <a href="radar.html" class="btn">Launch Radar</a>
-        </div>
-
+<div class="systems-container">
+    
+    <div class="system-card">
+        <span class="status-badge">LIVE SYSTEM</span>
+        <div class="sys-icon">🎯</div>
+        <h3>Footprint Scanner</h3>
+        <p>Rapidly map target usernames across 40+ distinct platforms, forums, and social networks to establish an immediate digital footprint.</p>
+        <a href="{{ url_for('scanner') }}" class="btn-tb">Launch Scanner</a>
     </div>
+    
+    <div class="system-card">
+        <span class="status-badge">LIVE SYSTEM</span>
+        <div class="sys-icon">🛡️</div>
+        <h3>Breach Radar</h3>
+        <p>Deep-web correlation engine. Cross-reference target data against known data breaches and active deep web credential dumps.</p>
+        <a href="{{ url_for('radar') }}" class="btn-tb">Launch Radar</a>
+    </div>
+
+    <div class="system-card">
+        <span class="status-badge">LIVE SYSTEM</span>
+        <div class="sys-icon">🛰️</div>
+        <h3>Geo-Nexus Extractor</h3>
+        <p>A zero-upload, client-side metadata extraction protocol. Pull exact GPS coordinates, hardware signatures, and generate automated satellite links.</p>
+        <a href="{{ url_for('geo_nexus') }}" class="btn-tb">Launch Terminal</a>
+    </div>
+
+</div>
 {% endblock %}
