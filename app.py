@@ -214,6 +214,37 @@ def join_waitlist():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# GEO NEXUS
+
+# --- GEO-NEXUS LOGIC ---
+
+@app.route('/generate-geo-links', methods=['POST'])
+def generate_geo_links():
+    data = request.json
+    lat = data.get('lat')
+    lon = data.get('lon')
+    
+    if not lat or not lon:
+        return jsonify({"error": "Coordinates Required"}), 400
+
+    # Phase 2: The Coordinate Multiplier
+    # We use Python to format the exact URLs for 7 different satellite/OSINT tools
+    osint_links = [
+        {"name": "Google Maps (Street/Satellite)", "url": f"https://www.google.com/maps/place/{lat},{lon}"},
+        {"name": "Google Earth Pro (Web)", "url": f"https://earth.google.com/web/search/{lat},{lon}"},
+        {"name": "Yandex Maps (Detailed Eastern Europe)", "url": f"https://yandex.com/maps/?ll={lon},{lat}&z=16"},
+        {"name": "Zoom Earth (Live Weather/Satellite)", "url": f"https://zoom.earth/#view={lat},{lon},16z"},
+        {"name": "SunCalc (Shadow/Time Verification)", "url": f"https://www.suncalc.org/#/{lat},{lon},15/null/null/null/null"},
+        {"name": "Wikimapia (User-Tagged Landmarks)", "url": f"https://wikimapia.org/#lang=en&lat={lat}&lon={lon}&z=15"},
+        {"name": "Bing Maps (High-Res Aerial)", "url": f"https://www.bing.com/maps?cp={lat}~{lon}&lvl=15"}
+    ]
+
+    return jsonify({
+        "status": "SUCCESS",
+        "coordinates": f"{lat}, {lon}",
+        "tools": osint_links
+    })
+
 # ==========================================
 # PAGE ROUTES (Navigation)
 # ==========================================
