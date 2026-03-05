@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TraceBack Geo Nexus | Auto Extractor</title>
-    <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
+{% extends "layout.html" %}
+
+{% block title %}TraceBack Geo Nexus | Auto Extractor{% endblock %}
+
+{% block content %}
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
@@ -416,5 +414,4 @@
             recPanel.style.display = 'block';
         }
     </script>
-</body>
-</html>
+{% endblock %}
